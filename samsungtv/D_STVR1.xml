@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:mcv:device:SamsungTVRemote:1</deviceType>
+    <friendlyName>Samsung TV Remote</friendlyName>
+    <Category_Num>9</Category_Num>
+    <SubCategory_Num>0</SubCategory_Num>
+    <staticJson>D_STVR1.json</staticJson>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:SwitchPower:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:SwitchPower1</serviceId>
+        <SCPDURL>S_SwitchPower1.xml</SCPDURL>
+      </service>
+      <service>
+        <serviceType>urn:schemas-mcv:service:SamsungTVRemote:1</serviceType>
+        <serviceId>urn:mcv:serviceId:SamsungTVRemote1</serviceId>
+        <SCPDURL>S_STVR1.xml</SCPDURL>
+      </service> 
+    </serviceList>
+    <implementationList>
+      <implementationFile>I_STVR1.xml</implementationFile>
+    </implementationList>
+  <sceneList>
+{
+	"group_1":{
+		"cmd_1": 
+		{
+			"label": "Shutdown",
+			"serviceId": "urn:upnp-org:serviceId:SwitchPower1",
+			"action": "SetTarget",
+			"arguments":
+			{
+				"newTargetValue": "0"
+			}
+		}
+	}
+}	
+	</sceneList>
+ 	<eventList>
+{
+	"event_1":{
+		"label": "A device is turned on or off",
+		"serviceId": "urn:upnp-org:serviceId:SwitchPower1",
+		"argumentList" :
+		{
+			"argument_1" :
+			{
+				"dataType": "boolean",
+				"defaultValue": "1",
+				"allowedValueList" : 
+				{
+					"Off" : "0",
+					"On" : "1"
+				},
+				"name": "Status",
+				"comparisson": "=",
+				"prefix": "Which mode",
+				"suffix": ""
+			}
+		}
+	}
+}
+  </eventList>	
+  </device>
+</root>

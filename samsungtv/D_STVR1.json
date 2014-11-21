@@ -1,0 +1,635 @@
+{
+	"flashicon": "icons\/RemoteControl.swf",
+	"imgIconBody": "",
+	"imgIconDimmable": "",
+	"imgIconTurnable": "",
+	"imgIconMin": "",
+	"imgIconMax": "",
+	"halloIconsDir": "pics/hallo",
+	"x":"2",
+	"y":"4",
+	"inScene":"1",
+	"DisplayStatus": {
+		"Service": "urn:upnp-org:serviceId:SwitchPower1",
+		"Variable": "Status",
+		"MinValue": "0",
+		"MaxValue": "1"
+	},
+	"doc_url": {
+		"doc_language": 1,
+		"doc_manual": 1,
+		"doc_version": 1,
+		"doc_platform": 0,
+		"doc_page": "lighting_devices"
+	},
+	"ToggleButton": 1,
+	"Tabs": [
+		{
+			"Label": {
+				"lang_tag": "tabname_control",
+				"text": "Control"
+			},
+			"Position": "0",
+			"TabType": "flash",
+			"ControlGroup":[
+				{
+					"id":"1",
+					"isSingle":"1",
+					"scenegroup":"1"
+				}
+			],
+			"SceneGroup":[
+				{
+					"id":"1",
+					"top": "2",
+					"left": "0",
+					"x":"2",
+					"y":"1"
+				}
+			],
+			"Control": [
+				{
+					"ControlGroup":"1",
+					"ControlType": "button",
+					"top": "0",
+					"left": "0",
+					"Label": {
+						"lang_tag": "cmd_off",
+						"text": "Off"
+					},
+					"Display": {
+						"Service": "urn:upnp-org:serviceId:SwitchPower1",
+						"Variable": "Status",
+						"Value": "0",
+						"Top": 60,
+						"Left": 50,
+						"Width": 75,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:upnp-org:serviceId:SwitchPower1",
+						"Action": "SetTarget",
+						"Parameters": [
+							{
+								"Name": "newTargetValue",
+								"Value": "0"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "Vol+",
+						"text": "Vol +"
+					},
+					"Display": {
+						"Top": 100,
+						"Left": 50,
+						"Width": 50,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_VOLUP"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "Vol-",
+						"text": "Vol -"
+					},
+					"Display": {
+						"Top": 100,
+						"Left": 120,
+						"Width": 50,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_VOLDOWN"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "Mute",
+						"text": "Mute"
+					},
+					"Display": {
+						"Top": 100,
+						"Left": 200,
+						"Width": 75,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_MUTE"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "1",
+						"text": "1"
+					},
+					"Display": {
+						"Top": 140,
+						"Left": 50,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_1"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "2",
+						"text": "2"
+					},
+					"Display": {
+						"Top": 140,
+						"Left": 80,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_2"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "3",
+						"text": "3"
+					},
+					"Display": {
+						"Top": 140,
+						"Left": 110,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_3"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "4",
+						"text": "4"
+					},
+					"Display": {
+						"Top": 170,
+						"Left": 50,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_4"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "5",
+						"text": "5"
+					},
+					"Display": {
+						"Top": 170,
+						"Left": 80,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_5"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "6",
+						"text": "6"
+					},
+					"Display": {
+						"Top": 170,
+						"Left": 110,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_6"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "7",
+						"text": "7"
+					},
+					"Display": {
+						"Top": 200,
+						"Left": 50,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_7"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "8",
+						"text": "8"
+					},
+					"Display": {
+						"Top": 200,
+						"Left": 80,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_8"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "9",
+						"text": "9"
+					},
+					"Display": {
+						"Top": 200,
+						"Left": 110,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_9"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "button",
+					"Label": {
+						"lang_tag": "0",
+						"text": "0"
+					},
+					"Display": {
+						"Top": 230,
+						"Left": 80,
+						"Width": 20,
+						"Height": 20
+					},
+					"Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_0"
+							}
+						]
+					}
+				},
+                {
+                    "ControlType": "image_player",
+                    "Label": {
+                        "lang_tag": "cmd_up",
+                        "text": "Up"
+                    },
+                    "Display": {
+                        "Top": 49,
+                        "Left": 466,
+                        "Width": 75,
+                        "Height": 20
+                    },
+                    "Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_UP"
+							}
+						]
+					},
+                    "image_src":"images/player/image_control_up.png"
+                },
+                {
+                    "ControlType": "image_player",
+                    "Label": {
+                        "lang_tag": "cmd_down",
+                        "text": "Down"
+                    },
+                    "Display": {
+                        "Top": 133,
+                        "Left": 466,
+                        "Width": 75,
+                        "Height": 20
+                    },
+                    "Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_DOWN"
+							}
+						]
+					},
+                    "image_src":"images/player/image_control_down.png"
+                },
+                {
+                    "ControlType": "image_player",
+                    "Label": {
+                        "lang_tag": "cmd_left",
+                        "text": "Left"
+                    },
+                    "Display": {
+                        "Top": 91,
+                        "Left": 423,
+                        "Width": 75,
+                        "Height": 20
+                    },
+                    "Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_LEFT"
+							}
+						]
+					},
+                    "image_src":"images/player/image_control_left.png"
+                },
+                {
+                    "ControlType": "image_player",
+                    "Label": {
+                        "lang_tag": "cmd_right",
+                        "text": "Right"
+                    },
+                    "Display": {
+                        "Top": 91,
+                        "Left": 506,
+                        "Width": 75,
+                        "Height": 20
+                    },
+                    "Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_RIGHT"
+							}
+						]
+					},
+                    "image_src":"images/player/image_control_right.png"
+                },
+                {
+                    "ControlType": "image_player",
+                    "Label": {
+                        "lang_tag": "cmd_ch_up",
+                        "text": "CH UP"
+                    },
+                    "Display": {
+                        "Top": 74,
+                        "Left": 447,
+                        "Width": 75,
+                        "Height": 20
+                    },
+                    "Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_CHUP"
+							}
+						]
+					},
+                    "image_src":"images/player/image_control_in.png"
+                },
+                {
+                    "ControlType": "image_player",
+                    "Label": {
+                        "lang_tag": "cmd_ch_down",
+                        "text": "CH DOWN"
+                    },
+                    "Display": {
+                        "Top": 103,
+                        "Left": 447,
+                        "Width": 75,
+                        "Height": 20
+                    },
+                    "Command": {
+						"Service": "urn:mcv:serviceId:SamsungTVRemote1",
+						"Action": "SendKey",
+						"Parameters": [
+							{
+								"Name": "KeyString",
+								"Value": "KEY_CHDOWN"
+							}
+						]
+					},
+                    "image_src":"images/player/image_control_out.png"
+                }
+			]
+		},
+		{
+			"Label": {
+				"lang_tag": "settings",
+				"text": "Settings"
+			},
+			"Position": "1",
+			"TabType": "javascript",
+			"ScriptName": "shared.js",
+			"Function": "simple_device"
+		},
+		{
+			"Label": {
+				"lang_tag": "advanced",
+				"text": "Advanced"
+			},
+			"Position": "2",
+			"TabType": "javascript",
+			"ScriptName": "shared.js",
+			"Function": "advanced_device"
+		},
+		{
+			"Label": {
+				"lang_tag": "device_options",
+				"text": "Device Options"
+			},
+			"Position": "3",
+			"TabType": "javascript",
+			"ScriptName": "shared.js",
+			"Function": "device_zwave_options"
+		},
+		{
+					"Label": {
+						"lang_tag": "logs",
+						"text": "Logs"
+					},
+					"Position": "4",
+					"TabType": "javascript",
+					"ScriptName": "shared.js",
+					"Function": "device_logs"
+		},
+		{
+					"Label": {
+						"lang_tag": "notifications",
+						"text": "Notifications"
+					},
+					"Position": "5",
+					"TabType": "javascript",
+					"ScriptName": "shared.js",
+					"Function": "device_notifications"
+		}
+	],
+	"sceneList": {
+		"group_1": {
+			"cmd_1": {
+				"label": "Power off",
+				"serviceId": "urn:upnp-org:serviceId:SwitchPower1",
+				"action": "SetTarget",
+				"arguments": {
+					"newTargetValue": "0"
+				},
+				"display": {
+					"service": "urn:upnp-org:serviceId:SwitchPower1",
+					"variable": "Status",
+					"value": "0"
+				}
+			}
+		}
+	},
+	"eventList2": [
+		{
+			"id": 1,
+			"label": {
+                "lang_tag": "a_device_is_turned_on_off",
+                "text": "A device is turned on or off"
+            },
+			"serviceId": "urn:upnp-org:serviceId:SwitchPower1",
+			"argumentList": [
+				{
+					"id": 1,
+					"dataType": "boolean",
+					"defaultValue": "1",
+					"allowedValueList": [
+						{
+                            "Off": "0",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_device_turned_off",
+                                "text": "_DEVICE_NAME_ is turned off"
+                            }
+                        },
+                        {
+                            "On": "1",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_device_turned_on",
+                                "text": "_DEVICE_NAME_ is turned on"
+                            }
+                        }
+					],
+					"name": "Status",
+					"comparisson": "=",
+					"prefix": {
+                        "lang_tag": "which_mode",
+                        "text": "Which mode"
+                    },
+					"suffix": {}
+				}
+			]
+		}
+	],
+    "DeviceType": "urn:mcv:device:SamsungTVRemote:1",
+	"device_type": "urn:mcv:device:SamsungTVRemote:1"
+}
