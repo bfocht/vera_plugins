@@ -1,0 +1,111 @@
+{
+    "flashicon": "icons\/devices.swf",
+    "DisplayStatus": {},
+    "doc_url": {},
+    "inScene": "0",
+    "Tabs": [
+        {
+            "Label": {
+                "lang_tag": "tabname_control",
+                "text": "Computer List"
+            },
+            "Position": "0",
+            "TabType": "flash",
+            "SceneGroup": [
+                {
+                    "id": "1",
+                    "top": "1",
+                    "left": "0",
+                    "x": "2",
+                    "y": "2"
+                }
+            ],
+            "ControlGroup": [
+                {
+                    "id": "1",
+                    "isSingle": "1",
+                    "scenegroup": "1"
+                }
+            ],
+            "Control": [
+                {
+                    "ControlGroup": "1",
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "label_name",
+                        "text": "Wake-On-LAN Controller"
+                    },
+                    "top": "0",
+                    "left": "0",
+                    "x": "2",
+                    "y": "1",
+                    "text_align": "left",
+                    "Display": {
+                        "Top": 20,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "label_name",
+                        "text": "Computer Name List:"
+                    },
+                    "Display": {
+                        "Top": 40,
+                        "Left": 50,
+                        "Width": 200,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "variable",
+                    "Display": {
+                        "Service": "urn:upnp-wol-svc:serviceId:WOL1",
+                        "Variable": "ComputerNameList",
+                        "Top": 40,
+                        "Left": 265,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "label_address",
+                        "text": "MAC Address List:"
+                    },
+                    "Display": {
+                        "Top": 70,
+                        "Left": 50,
+                        "Width": 130,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "variable",
+                    "Display": {
+                        "Service": "urn:upnp-wol-svc:serviceId:WOL1",
+                        "Variable": "ComputerAddressList",
+                        "Top": 70,
+                        "Left": 265,
+                        "Width": 200,
+                        "Height": 20
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "lang_tag": "advanced",
+                "text": "Advanced"
+            },
+            "Position": "2",
+            "TabType": "javascript",
+            "ScriptName": "shared.js",
+            "Function": "advanced_device"
+        }
+    ],
+    "DeviceType": "urn:schemas-wol-svc:device:WOL"
+}

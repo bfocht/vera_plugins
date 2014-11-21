@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<implementation>
+<specVersion>
+	<major>1</major>
+	<minor>0</minor>
+</specVersion>
+<functions>
+	local wolLib
+
+	function startupWOL(lul_device)
+		if (package.path:find ("/etc/cmh-ludl/?.lua;/etc/cmh-lu/?.lua", 1, true) == nil) then
+			package.path = package.path .. ";/etc/cmh-ludl/?.lua;/etc/cmh-lu/?.lua"
+		end
+		package.loaded.L_wolLib = nil
+		wolLib = require("L_WOL")        
+		wolLib.startup(lul_device)	
+	end
+</functions>
+<incoming>
+  <lua /> 
+</incoming>
+<startup>startupWOL</startup>
+
+<actionList>
+	<action>
+	      <serviceId>urn:upnp-org:serviceId:SwitchPower1</serviceId>
+	      <name>SetTarget</name>
+	      <run>
+		   wolLib.switch_set_target(lul_device, lul_settings)
+	      </run>
+	</action>
+
+	<action>
+	      <serviceId>urn:micasaverde-com:serviceId:HaDevice1</serviceId>
+	      <name>ToggleState</name>
+	      <run>
+		wolLib.log("Action::ToggleState:" .. lul_device)
+	      </run>
+	</action>
+</actionList>
+</implementation>
