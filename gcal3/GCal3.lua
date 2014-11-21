@@ -473,6 +473,7 @@ function GCalTimer(data)
     --trigger the device
     luup.variable_set(SECURITY_SID, "Tripped", 1, lul_device)
     luup.call_action(sid, "SetTarget",{newTargetValue = "1"}, tonumber(dev_num))
+    luup.variable_set(GCAL_SID, "gc_displaystatus", 100, lul_device)
     luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, 54 )
     luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. os.date("%H:%M %b %d", endtime) , lul_device)
     --set the end timeout
@@ -484,6 +485,7 @@ function GCalTimer(data)
     DEBUG(3, logmessage)
     luup.variable_set(SECURITY_SID, "Tripped", 0, lul_device)
     luup.call_action(sid, "SetTarget",{newTargetValue = "0"}, tonumber(dev_num))
+    luup.variable_set(GCAL_SID, "gc_displaystatus", 0, lul_device)
     luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, 54 )
     luup.call_timer("GCalTimer", 1, 100, "", GC.json.encode({"timeout", "", GC.interrupt}))
   else
@@ -564,7 +566,7 @@ function setupVariables()
   GC.debug = tonumber(n1)
   
   n1 = luup.variable_get(GCAL_SID, "gc_displaystatus", lul_device)
-  if ((n1 == nil) or (tonumber(n1) > 100)) then 
+  if ((n1 == nil) or n1 == "" or (tonumber(n1) > 100)) then
     n1 = 100
     luup.variable_set(GCAL_SID, "gc_displaystatus",n1, lul_device)
   end

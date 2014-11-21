@@ -3,7 +3,8 @@ function calendarTab(device){
 
 	var src = get_device_state(device, "urn:srs-com:serviceId:GCalIII", "gc_CalendarID", 0);
 
-	html += '<iframe src="' + src + '&amp;';
+	html += '<iframe src=https://www.google.com/calendar/embed?src=' + src + '&amp;';
+	html += 'ctz=America/Phoenix&amp;'
 	html += 'showPrint=0&amp;';
 	html += 'showTabs=0&amp;';
 	html += 'showCalendars=0&amp;';
