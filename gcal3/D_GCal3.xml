@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:schemas-srs-com:device:GCal:3</deviceType>
+    <staticJson>D_GCal3.json</staticJson>
+    <serviceList>
+	<service>
+		<serviceType>urn:schemas-srs-com:service:GCal:3</serviceType>
+		<serviceId>urn:srs-com:serviceId:GCalIII</serviceId>
+		<SCPDURL>S_GCal3.xml</SCPDURL>
+	</service>
+	<service>
+		<serviceType>urn:schemas-micasaverde-com:service:SecuritySensor:1</serviceType>
+		<serviceId>urn:micasaverde-com:serviceId:SecuritySensor1</serviceId>
+		<SCPDURL>S_SecuritySensor1.xml</SCPDURL>
+	</service>
+    </serviceList>
+    <friendlyName>GCal3 Sensor</friendlyName>
+    <manufacturer>stuartofmt</manufacturer>
+    <manufacturerURL>www.stuartofmt.com</manufacturerURL>
+    <modelDescription>GCal3 Sensor</modelDescription>
+    <modelName>GCal3 Sensor</modelName>
+    <modelNumber>3.0</modelNumber>
+                        
+    <serialNumber>123456789003</serialNumber>
+    <UDN>uuid:gcal-1234567890003</UDN>
+    <UPC>123456789</UPC>
+    <handleChildren>0</handleChildren>
+    <implementationList>
+      <implementationFile>I_GCal3.xml</implementationFile>
+    </implementationList>
+    <presentationURL>/gcal.html</presentationURL>
+   </device>
+</root>

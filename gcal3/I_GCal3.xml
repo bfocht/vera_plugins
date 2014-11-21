@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<implementation>
+<files>GCal3.lua</files>
+  <incoming>
+   <lua>
+      luup.log("GCAL gc_ - Incoming should not be called on this device")
+   </lua>
+  </incoming>
+  <startup>GCalStartup</startup>
+  <actionList>
+  <action>
+     <serviceId>urn:micasaverde-com:serviceId:SecuritySensor1</serviceId>
+     <name>SetArmed</name>
+     <run>
+      local newArmedValue
+      if (lul_settings.newArmedValue == "0") then
+        newArmedValue = "0"
+      else
+        newArmedValue = luup.variable_get(SECURITY_SID, "Armed", lul_device)
+        if newArmedValue == "0" then
+          newArmedValue = "1"
+        else
+          newArmedValue = "0"
+        end
+      end
+      luup.variable_set(SECURITY_SID, "Armed", newArmedValue, lul_device)
+     </run>
+  </action>
+  <action>
+     <serviceId>urn:srs-com:serviceId:GCalIII</serviceId>
+     <name>GCalCheck</name>
+     <run>
+      luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
+      luup.variable_set(GCAL_SID, "gc_NextEvent","Checking ..." , lul_device)
+      luup.call_timer("GCalMain",1,1,"","")
+     </run>
+  </action>
+  <action>
+     <serviceId>urn:srs-com:serviceId:GCalIII</serviceId>
+     <name>SetGCalCalendarID</name>
+     <run>
+       if (lul_settings.new_gc_CalendarID == nil) then
+         DEBUG(3, "GCAL gc_ Calendar ID was not set")
+         return
+      end
+      GC.newCalendarID = trimString(lul_settings.new_gc_CalendarID)
+      DEBUG(3,"User input Calendar ID = " .. lul_settings.new_gc_CalendarID)     
+      local _ = parseCalendarID(GC.newCalendarID)
+      luup.call_timer("GCalMain",1,1,"","")
+     </run>
+  </action>
+  </actionList>
+</implementation>

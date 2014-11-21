@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <serviceStateTable>
+    <stateVariable sendEvents="no">
+      <name>gc_CalendarID</name>
+      <sendEventsAttribute>no</sendEventsAttribute>
+      <datatype>string</datatype>
+      <defaultValue></defaultValue>
+    </stateVariable>
+    <stateVariable allowRepeats="yes">
+       <name>gc_TrippedEvent</name>
+       <sendEventsAttribute>yes</sendEventsAttribute>
+       <dataType>string</dataType>
+       <shortCode>gc_tripped</shortCode>
+       <defaultValue>""</defaultValue>
+    </stateVariable>
+  </serviceStateTable>
+  <actionList>
+    <action>
+        <name>GCalCheck</name>
+    </action>
+    <action>
+        <name>SetGCalCalendarID</name>
+        <argumentList>
+         <argument>
+          <name>new_gc_CalendarID</name>
+          <direction>in</direction>
+         </argument>
+      </argumentList>
+    </action>
+  </actionList>
+</scpd>
+
+
+
+
+
+
+
