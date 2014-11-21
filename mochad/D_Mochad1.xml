@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:schemas-micasaverde-com:device:mochad:1</deviceType>
+    <friendlyName>Mochad Control of cm15a over ethernet</friendlyName>
+    <manufacturer>X10</manufacturer>
+    <manufacturerURL>x10.com</manufacturerURL>
+    <modelDescription>X10 RF/PL Controller</modelDescription>
+    <modelName>cm15a</modelName>
+    <modelNumber>cm15a</modelNumber>
+    <protocol>crlf</protocol>
+    <handleChildren>1</handleChildren>
+    <serviceList>
+	<service>
+		<serviceType>urn:schemas-micasaverde-com:service:mochad:1</serviceType>
+		<serviceId>urn:micasaverde-com:serviceId:mochad1</serviceId>
+		<SCPDURL>S_Mochad1.xml</SCPDURL>
+	</service>
+    </serviceList>    
+    <implementationList>
+      <implementationFile>I_Mochad1.xml</implementationFile>
+    </implementationList>
+  </device>
+</root>

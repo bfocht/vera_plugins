@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <serviceStateTable>
+ 
+    <stateVariable sendEvents="no">
+      <name>PowerLineCommand</name>
+      <datatype>boolean</datatype>
+    </stateVariable>
+ 
+    <stateVariable sendEvents="no">
+      <name>BinaryModules</name>
+      <datatype>string</datatype>
+    </stateVariable>
+	
+    <stateVariable sendEvents="no">
+      <name>DimmableModules</name>
+      <datatype>string</datatype>
+    </stateVariable>
+	
+    <stateVariable sendEvents="no">
+      <name>SoftstartModules</name>
+      <datatype>string</datatype>
+    </stateVariable>
+ 
+     <stateVariable sendEvents="no">
+      <name>MotionSensors</name>
+      <datatype>string</datatype>
+    </stateVariable>
+ 
+    <stateVariable sendEvents="no">
+      <name>RFSecMotionSensors</name>
+      <datatype>string</datatype>
+    </stateVariable>
+ 
+    <stateVariable sendEvents="no">
+      <name>RFSecDoorSensors</name>
+      <datatype>string</datatype>
+    </stateVariable>
+    
+     <stateVariable sendEvents="no">
+          <name>RFSecRemote</name>
+          <datatype>string</datatype>
+    </stateVariable>
+ 
+    <stateVariable sendEvents="no">
+      <name>LCD</name>
+      <datatype>string</datatype>
+    </stateVariable>
+  </serviceStateTable>
+</scpd>
+

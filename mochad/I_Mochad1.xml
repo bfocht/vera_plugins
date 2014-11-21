@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<implementation>
+  <specVersion>
+         <major>1</major>
+         <minor>5</minor>
+  </specVersion>
+  <files>L_Mochad1.lua</files>
+  <settings>
+      <protocol>crlf</protocol>
+  </settings>
+  
+  <incoming>
+     <lua>incoming(lul_data)</lua>
+  </incoming>
+  
+  <startup>startup</startup>
+  
+  <actionList>
+  
+    <action>
+      <serviceId>urn:upnp-org:serviceId:SwitchPower1</serviceId>
+      <name>SetTarget</name>
+      <run>
+           switch_set_target(lul_device, lul_settings)
+      </run>
+    </action>
+    
+    <action>
+      <serviceId>urn:upnp-org:serviceId:Dimming1</serviceId>
+      <name>SetLoadLevelTarget</name>
+      <run>
+           light_set_level(lul_device, lul_settings)
+      </run>
+    </action>
+    <action>
+      <serviceId>urn:micasaverde-com:serviceId:SecuritySensor1</serviceId>
+      <name>SetArmed</name>
+      <run>
+        debug("Action::SetArmed:"..lul_settings.newArmedValue)
+        luup.variable_set(SECURITY_SID, "Armed", lul_settings.newArmedValue, lul_device)
+      </run>
+    </action>
+    <action>
+      <serviceId>urn:micasaverde-com:serviceId:HaDevice1</serviceId>
+      <name>ToggleState</name>
+      <run>
+           debug("Action::ToggleState:" .. lul_device)
+      </run>
+    </action>
+    <action>
+	<serviceId>urn:micasaverde-com:serviceId:AlarmPartition2</serviceId>
+	<name>RequestArmMode</name>
+	<run>
+	    requestArmMode(lul_device, lul_settings.State, lul_settings.PINCode)
+	</run>
+    </action>
+    <action>
+	<serviceId>urn:micasaverde-com:serviceId:AlarmPartition2</serviceId>
+	<name>RequestQuickArmMode</name>
+	<run>
+	    requestQuickArmMode(lul_device, lul_settings.State)
+	</run>
+    </action>
+    <action>
+	<serviceId>urn:micasaverde-com:serviceId:AlarmPartition2</serviceId>
+	<name>RequestPanicMode</name>
+	<run>
+	  requestPanicMode(lul_device, lul_settings.State)
+	</run>
+</action>    
+  </actionList>
+</implementation>

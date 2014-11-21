@@ -1,0 +1,551 @@
+{
+	"flashicon": "icons\/Door_Lock.swf",
+	"imgIconBody": "",
+	"imgIconDimmable": "",
+	"imgIconTurnable": "",
+	"imgIconMin": "icons\/Door_Lock_0.png",
+	"imgIconMax": "icons\/Door_Lock_100.png",
+	"halloIconsDir": "pics\/hallo",
+	"inScene": "1",
+	"DisplayStatus": {
+		"Style": "label",
+		"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+		"Variable": "DetailedArmMode",
+		"MinValue": "Disarmed",
+		"MaxValue": "Armed"
+	},
+	"doc_url": {
+		"doc_language": 1,
+		"doc_manual": 1,
+		"doc_version": 1,
+		"doc_platform": 0,
+		"doc_page": "devices"
+	},
+	"ToggleButton": 1,
+	"Tabs": [
+	{
+		"Label": {
+			"lang_tag": "tab_alarm_partition",
+			"text": "Detailed Alarm Partition"
+		},
+		"Position": "1",
+		"TabType": "flash",
+		"SceneGroup":[
+			{
+				"id": "1",
+				"top": "1",
+				"left": "0",
+				"x": "2",
+				"y": "2"
+			}
+			],
+			"ControlGroup": [
+			{
+				"id": "1",
+				"isSingle": "1",
+				"scenegroup": "1"
+			},
+			{
+				"id": "2"
+			}
+		],
+		"Control": [
+		{
+			"ControlGroup": "1",
+			"ControlType": "label",
+			"Label": {
+				"lang_tag": "label_status",
+				"text": "Status:"
+			},
+			"top": "0",
+			"left": "0",
+			"x": "1",
+			"y": "1",
+			"text_align": "left",
+			"Display": {
+				"Top": 20,
+				"Left": 285,
+				"Width": 75,
+				"Height": 20
+			}
+		},
+		{
+			"ControlGroup": "1",
+			"ControlType": "variable",
+			"top": "0",
+			"left": "1",
+			"x": "1",
+			"y": "1",
+			"text_align": "left",			
+			"Display": {
+				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+				"Variable": "DetailedArmMode",
+				"Top": 40,
+				"Left": 285,
+				"Width": 75,
+				"Height": 20
+			}
+		},
+		{
+			"ControlGroup": "2",
+			"ControlType": "label",
+			"Label": {
+				"lang_tag": "label_pin_code",
+				"text": "PIN Code:"
+			},
+			"Display": {
+				"Top": 80,
+				"Left": 70,
+				"Width": 75,
+				"Height": 20
+			}
+		},
+		{
+			"ControlGroup": "2",
+			"ControlType": "input",
+			"ID": "PINCode",
+			"Display": {
+					"Top": 105,
+					"Left": 70,
+					"Width": 75,
+					"Height": 20
+				}
+		},
+		{
+			"ControlGroup": "2",
+			"ControlType": "label",
+			"Label": {
+				"lang_tag": "label_arm_mode",
+				"text": "Arm Mode:"
+			},
+			"Display": {
+				"Top": 80,
+				"Left": 285,
+				"Width": 75,
+				"Height": 20
+			}
+		},
+		{
+			"ControlGroup": "2",
+			"ControlType": "button",
+			"Label": {
+				"lang_tag": "button_away",
+				"text": "Away"
+			},
+			"Display": {
+				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+				"Variable": "DetailedArmMode",
+				"Value": "Armed",
+				"Top": 100,
+				"Left": 200,
+				"Width": 75,
+				"Height": 20
+			},
+			"Command": {
+				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+				"Action": "RequestArmMode",
+				"Parameters": [
+					{
+						"Name": "State",
+						"Value": "Armed"
+						},
+						{
+							"Name": "PINCode",
+							"ID": "PINCode"
+						}
+					]
+				}
+		},
+		{
+			"ControlGroup": "1",
+			"ControlType": "button",
+			"Label": {
+				"lang_tag": "button_arminstant",
+				"text": "Quick Arm"
+			},
+			"top": "1",
+			"left": "0",
+			"x": "1",
+			"y": "1",			
+			"Display": {
+				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+				"Variable": "DetailedArmMode",
+				"Value": "Vacation",
+				"Top": 140,
+				"Left": 200,
+				"Width": 75,
+				"Height": 20
+			},
+			"Command": {
+				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+				"Action": "RequestQuickArmMode",
+				"Parameters": [
+					{
+						"Name": "State",
+						"Value": "ArmedInstant"
+					}
+				]
+			}
+			},
+			{
+				"ControlGroup": "2",
+				"ControlType": "button",
+				"Label": {
+					"lang_tag": "button_stay",
+					"text": "Stay"
+				},
+				"Display": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Variable": "DetailedArmMode",
+					"Value": "Stay",
+					"Top": 100,
+					"Left": 285,
+					"Width": 75,
+					"Height": 20
+				},
+				"Command": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Action": "RequestArmMode",
+					"Parameters": [
+						{
+							"Name": "State",
+							"Value": "Stay"
+						},
+						{
+							"Name": "PINCode",
+							"ID": "PINCode"
+						}
+					]
+				}
+			},
+			{
+				"ControlGroup": "2",
+				"ControlType": "button",
+				"Label": {
+					"lang_tag": "button_istay",
+					"text": "iStay"
+				},
+				"Display": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Variable": "DetailedArmMode",
+					"Value": "StayInstant",
+					"Top": 140,
+					"Left": 285,
+					"Width": 75,
+					"Height": 20
+				},
+				"Command": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Action": "RequestArmMode",
+					"Parameters": [
+						{
+							"Name": "State",
+							"Value": "StayInstant"
+						},
+						{
+							"Name": "PINCode",
+							"ID": "PINCode"
+						}
+					]
+				}
+			},
+			{
+				"ControlGroup": "2",
+				"ControlType": "button",
+				"Label": {
+					"lang_tag": "button_night",
+					"text": "Night"
+				},
+				"Display": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Variable": "DetailedArmMode",
+					"Value": "Night",
+					"Top": 100,
+					"Left": 370,
+					"Width": 75,
+					"Height": 20
+				},
+				"Command": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Action": "RequestArmMode",
+					"Parameters": [
+						{
+							"Name": "State",
+							"Value": "Night"
+						},
+						{
+							"Name": "PINCode",
+							"ID": "PINCode"
+						}
+					]
+				}
+			},
+			{
+				"ControlGroup": "2",
+				"ControlType": "button",
+				"Label": {
+					"lang_tag": "button_inight",
+					"text": "iNight"
+				},
+				"Display": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Variable": "DetailedArmMode",
+					"Value": "NightInstant",
+					"Top": 140,
+					"Left": 370,
+					"Width": 75,
+					"Height": 20
+				},
+				"Command": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Action": "RequestArmMode",
+					"Parameters": [
+						{
+							"Name": "State",
+							"Value": "NightInstant"
+						},
+						{
+							"Name": "PINCode",
+							"ID": "PINCode"
+						}
+					]
+				}
+			},
+			{
+				"ControlGroup": "1",
+				"ControlType": "button",
+				"Label": {
+					"lang_tag": "button_disarm",
+					"text": "Disarm"
+				},
+				"top": "1",
+				"left": "1",
+				"x": "1",
+				"y": "1",			
+				"Display": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Variable": "ArmMode",
+					"Value": "Disarmed",
+					"Top": 180,
+					"Left": 285,
+					"Width": 75,
+					"Height": 20
+				},
+				"Command": {
+					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
+					"Action": "RequestArmMode",
+					"Parameters": [
+						{
+							"Name": "State",
+							"Value": "Disarmed"
+						},
+						{
+							"Name": "PINCode",
+							"ID": "PINCode"
+						}
+					]
+				}
+			}
+			]
+		},
+		{
+			"Label": {
+				"lang_tag": "notifications",
+				"text": "Notifications"
+			},
+			"Position": "2",
+			"TabType": "javascript",
+			"ScriptName": "shared.js",
+			"Function": "device_notifications"
+		},
+		{
+			"Label": {
+				"lang_tag": "advanced",
+				"text": "Advanced"
+			},
+			"Position": "3",
+			"TabType": "javascript",
+			"ScriptName": "shared.js",
+			"Function": "advanced_device"
+		}
+	],
+	"DeviceType": "urn:schemas-micasaverde-com:device:mochad:1",
+	"eventList2":[
+	 	{
+		"id": 1,
+		"label": {
+			"lang_tag":"armed_state",
+			"text":"Armed state"
+			},
+		"serviceId": "urn:micasaverde-com:serviceId:AlarmPartition2",
+		"dataType": "string",
+		"defaultValue": "Armed",
+		"allowedValueList": [
+			{
+				"value": "Armed",
+				"HumanFriendlyText": {
+					"lang_tag": "device_armed",
+					"text": "_DEVICE_NAME_ is Armed"
+				}
+			},
+			{
+				"value": "Disarmed",
+				"HumanFriendlyText": {
+				"lang_tag": "device_disarmed",
+				"text": "_DEVICE_NAME_ is Disarmed"
+				}
+			}
+		],				
+		"name": "ArmMode",
+		"comparisson": "=",
+		"prefix": {
+			"lang_tag": "which_mode",
+			"text": "Which mode"
+			},
+		"suffix": {}
+		},
+		{
+		"id": 2,
+		"label":{
+			"lang_tag":"armed_detailed_state",
+			"text":	"Armed detailed state"
+		},
+		"serviceId": "urn:micasaverde-com:serviceId:AlarmPartition2",
+		"dataType": "string",
+		"defaultValue": "Armed",
+		"allowedValueList": [
+			{
+				"value":"Disarmed",
+				"HumanFriendlyText": {
+					"lang_tag": "disarmed",
+					"text": "Disarmed"
+				}
+			},
+			{
+				"value":"Armed" ,
+				"HumanFriendlyText": {
+					"lang_tag": "armed",
+					"text": "Armed"
+				}
+			},
+			{
+				"value":"Stay" ,
+				"HumanFriendlyText": {
+					"lang_tag": "stay",
+					"text": "Stay"
+				}
+			},
+			{
+				"value":"StayInstant",
+				"HumanFriendlyText": {
+					"lang_tag" : "stayinstant",
+					"text" : "StayInstant"
+				}
+			},
+			{
+				"value":"Night",
+				"HumanFriendlyText": {
+					"lang_tag" : "night",
+					"text" : "Night"
+				}
+			},
+			{
+				"value":"NightInstant" ,
+				"HumanFriendlyText": {
+					"lang_tag": "nightinstant",
+					"text": "NightInstant"
+				}
+			},
+			{
+				"value":"Force",
+				"HumanFriendlyText": {
+					"lang_tag": "force",
+					"text": "Force"
+				}
+			},
+			{
+				"value":"Ready",
+				"HumanFriendlyText": {
+					"lang_tag" : "ready",
+					"text" : "Ready"
+				}
+			},
+			{
+				"value":"Vacation",
+				"HumanFriendlyText": {
+					"lang_tag" : "vacation",
+					"text" : "Vacation"
+				}
+			},
+			{
+				"value":"NotReady",
+				"HumanFriendlyText": {
+					"lang_tag" : "notready",
+					"text" : "Not Ready"
+				}
+			},
+			{
+				"value":"FailedToArm",
+				"HumanFriendlyText": {
+					"lang_tag" : "failedtoarm",
+					"text" : "Failed To Arm"
+				}
+			},
+			{
+				"value":"EntryDelay",
+				"HumanFriendlyText": {
+					"lang_tag" : "entrydelay",
+					"text" : "Entry Delay"
+				}
+			},
+			{
+				"value":"ExitDelay",
+				"HumanFriendlyText": {
+					"lang_tag" : "exitdelay",
+					"text" : "Exit Delay"
+				}
+			}
+			],
+			"name": "DetailedArmMode",
+			"comparisson": "=",
+			"prefix": {
+				"lang_tag" : "armedstate",
+				"text" : "Armed state"
+			},
+			"suffix": {}
+		},
+		{
+		"id": 3,
+		"label":{
+			"lang_tag":"alarmactive",
+			"text":"Alarm Active"
+		},
+		"serviceId": "urn:micasaverde-com:serviceId:AlarmPartition2",
+		"dataType": "boolean",
+		"defaultValue": "Active",
+		"allowedValueList" : [
+			{
+				"value":"Active",
+				"HumanFriendlyText": {
+					"lang_tag": "active",
+					"text": "Active"
+				}
+			},
+			{
+				"value":"NotActive",
+				"HumanFriendlyText": {
+					"lang_tag": "none",
+					"text": "None"
+				}
+			}
+		],
+		"name": "Alarm",
+		"comparisson": "=",
+		"prefix":{
+          		"lang_tag": "device_is_active",
+          		"text": "Is Active?"
+          	},
+		"suffix": {}
+		}
+	]	
+}
