@@ -1,0 +1,1 @@
+luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Message from Vera', body = 'How are you today?' }, 54 )

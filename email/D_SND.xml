@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>5</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:schemas-smtp-svc:device:SND</deviceType>
+    <staticJson>D_SND.json</staticJson> 
+    <friendlyName>Email Send Device</friendlyName>
+    <manufacturer></manufacturer>
+    <manufacturerURL></manufacturerURL>
+    <modelDescription>SMTP Device</modelDescription>
+    <modelName>SND</modelName>
+    <modelNumber>1.0</modelNumber>
+    <UDN>uuid:upnp-smtp-1_0-0000000000006</UDN>
+    <Category_Num>11</Category_Num>
+    <SubCategory_Num>0</SubCategory_Num>
+    <serviceList>
+      <service>
+        <serviceType>urn:smtp-svc:service:SND:1</serviceType>
+        <serviceId>urn:upnp-smtp-svc:serviceId:SND1</serviceId>
+        <SCPDURL>S_SND.xml</SCPDURL>
+      </service>
+    </serviceList>
+    <eventList>
+    </eventList>
+    <handleChildren>0</handleChildren>
+    <implementationList>
+      <implementationFile>I_SND.xml</implementationFile>
+    </implementationList>
+  </device>
+</root>

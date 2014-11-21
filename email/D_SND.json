@@ -1,0 +1,254 @@
+{
+    "flashicon": "icons\/generic_icon.swf",
+    "imgIconBody": "",
+    "imgIconDimmable": "",
+    "imgIconTurnable": "",
+    "imgIconMin": "",
+    "imgIconMax": "",
+    "halloIconsDir": "pics\/hallo",
+    "inScene": "1",
+    "DisplayStatus": {
+    },
+    "doc_url": {
+        "doc_language": 1,
+        "doc_manual": 1,
+        "doc_version": 1,
+        "doc_platform": 0,
+        "doc_page": "devices" 
+    },
+    "Tabs": [
+        {
+		"Label": {
+		"lang_tag": "smtp_status",
+		"text": "SMTP Status" 
+		},
+		"Position": "0",
+		"TabType": "flash",
+		"SceneGroup": [
+			{
+			"id": "1",
+			"top": "1",
+			"left": "0",
+			"x": "1",
+			"y": "1"
+			}
+		],
+		"ControlGroup": [
+			{
+			"id": "1",
+			"scenegroup": "1",
+			"isSingle": "1"
+			},
+			{
+			"id": "2"
+			}
+			
+		],
+	    "Control": [
+             {
+                "ControlGroup":"1",
+       		"ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "Messages sent:" 
+                },
+                "top": 0,
+		"left": 0,
+		"x": 1,
+		"y": 1,
+		"text_align": "left",
+                "Display": {
+                    "Top": 10,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"1",
+                "ControlType": "variable",
+                "top": 0,
+		"left": 1,
+		"x": 1,
+		"y": 1,
+		"text_align": "left",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "MessagesSent",
+                    "Top": 10,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              },
+              {
+                "ControlGroup":"2",
+                "ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "SMTP server:" 
+                },
+                "Display": {
+                    "Top": 40,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"2",
+                "ControlType": "variable",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "SMTPServer",
+                    "Top": 40,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              },
+              {
+                "ControlGroup":"2",
+                "ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "SMTP user:" 
+                },
+                "Display": {
+                    "Top": 60,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"2",     		
+                "ControlType": "variable",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "SMTPAuthUser",
+                    "Top": 60,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              },
+              {
+                "ControlGroup":"2",
+                "ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "SMTP password:" 
+                },
+                "Display": {
+                    "Top": 80,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"2",
+                "ControlType": "variable",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "SMTPAuthPassword",
+                    "Top": 80,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              },
+              {
+                "ControlGroup":"2",
+                "ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "SMTP port:" 
+                },
+                "Display": {
+                    "Top": 100,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"2",
+                "ControlType": "variable",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "SMTPPort",
+                    "Top": 100,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              },
+              {
+                "ControlGroup":"2",
+                "ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "User sending:" 
+                },
+                "Display": {
+                    "Top": 120,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"2",
+                "ControlType": "variable",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "UserSending",
+                    "Top": 120,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              },
+              {
+                "ControlGroup":"2",
+                "ControlType": "label",
+                "Label": {
+                    "lang_tag": "lblMsg",
+                    "text": "User receiving:" 
+                },
+                "Display": {
+                    "Top": 140,
+                    "Left": 10,
+                    "Width": 100,
+                    "Height": 20 
+                } 
+              },
+              {
+   		"ControlGroup":"2",
+                "ControlType": "variable",
+                "Display": {
+                    "Service": "urn:upnp-smtp-svc:serviceId:SND1",
+                    "Variable": "UserReceiving",
+                    "Top": 140,
+                    "Left": 120,
+                    "Width": 150,
+                    "Height": 20 
+                } 
+              }
+          ]
+         },
+        {
+            "Label": {
+                "lang_tag": "advanced",
+                "text": "Advanced" 
+            },
+            "Position": "1",
+            "TabType": "javascript",
+            "ScriptName": "shared.js",
+            "Function": "advanced_device" 
+        }
+    ],
+    "DeviceType": "urn:schemas-smtp-svc:device:SND"
+}

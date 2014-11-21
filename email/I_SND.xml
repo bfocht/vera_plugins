@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<implementation>
+ 
+  <functions>
+
+---
+--- SMTP Notification Device V0.5
+---
+
+    local smtp = require("socket.smtp")
+
+    local SND_SERVICE = 'urn:upnp-smtp-svc:serviceId:SND1'
+
+    local SND_DEVICE
+
+    local SMTP_server        
+    local SMTP_auth_user     
+    local SMTP_auth_password 
+    local SMTP_port          
+    local user_sending       
+    local user_receiving     
+    local messages_sent      
+
+
+    function get_variable( service, variable, id, default )
+
+     local res = luup.variable_get( service, variable, id )
+
+     if ( res == nil ) or ( res == '' )
+      then
+       res = default
+       luup.variable_set( service, variable, default, id )
+      end
+
+     return res
+
+    end -- get_variable( service, variable, id, default )
+
+
+    function StartupSND( lul_device )
+
+     SND_DEVICE = lul_device
+
+     SMTP_server        = get_variable( SND_SERVICE, 'SMTPServer'      , SND_DEVICE, ''   )
+     SMTP_auth_user     = get_variable( SND_SERVICE, 'SMTPAuthUser'    , SND_DEVICE, ''   )
+     SMTP_auth_password = get_variable( SND_SERVICE, 'SMTPAuthPassword', SND_DEVICE, ''   )
+     SMTP_port          = get_variable( SND_SERVICE, 'SMTPPort'        , SND_DEVICE, '25' )
+     user_sending       = get_variable( SND_SERVICE, 'UserSending'     , SND_DEVICE, ''   )
+     user_receiving     = get_variable( SND_SERVICE, 'UserReceiving'   , SND_DEVICE, ''   )
+
+     messages_sent      = tonumber( get_variable( SND_SERVICE, 'MessagesSent', SND_DEVICE, '0' ) ) or 0
+
+    end -- StartupSND( lul_device )
+      
+  </functions>
+
+  <incoming>
+    <lua>
+    
+    </lua>
+  </incoming>
+
+  <startup>StartupSND</startup>
+
+  <actionList>
+    <action>
+      <serviceId>urn:upnp-smtp-svc:serviceId:SND1</serviceId>
+      <name>SendMail</name>
+      <run>
+
+        if (  ( lul_settings.subject ~= nil ) and ( lul_settings.subject ~= '' ) 
+             or
+              ( lul_settings.body ~= nil ) and ( lul_settings.body ~= '' )
+            )
+         then
+
+          local mesgt = { headers = { to      = user_receiving,
+                                      from    = user_sending,
+                                      subject = lul_settings.subject or ''
+                                    },
+                           body    = lul_settings.body or ''
+                        }
+
+          local r, e = smtp.send{ from     = user_sending,
+                                  rcpt     = {user_receiving},
+                                  source   = smtp.message(mesgt),
+                                  server   = SMTP_server,
+                                  port     = SMTP_port,
+                                  user     = SMTP_auth_user,
+                                  password = SMTP_auth_password
+                                }
+
+          messages_sent = messages_sent + 1
+          luup.variable_set( SND_SERVICE, 'MessagesSent', tostring( messages_sent ), SND_DEVICE )
+          --luup.log("SMTP: message sent " .. lul_settings.subject, 50)
+         end
+
+      </run>
+    </action>
+  </actionList>
+
+</implementation>

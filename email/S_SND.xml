@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+<specVersion>
+  <major>1</major>
+  <minor>0</minor>
+</specVersion>
+<serviceStateTable>
+
+  <stateVariable>
+    <name>SMTPServer</name>
+    <sendEventsAttribute>no</sendEventsAttribute>
+    <dataType>string</dataType>
+    <defaultValue></defaultValue>
+    <shortCode>smtpserver</shortCode>
+  </stateVariable>
+
+  <stateVariable>
+    <name>SMTPAuthUser</name>
+    <sendEventsAttribute>no</sendEventsAttribute>
+    <dataType>string</dataType>
+    <defaultValue></defaultValue>
+    <shortCode>smtpauthuser</shortCode>
+  </stateVariable>
+
+  <stateVariable>
+    <name>SMTPPort</name>
+    <sendEventsAttribute>no</sendEventsAttribute>
+    <dataType>string</dataType>
+    <defaultValue></defaultValue>
+    <shortCode>smtpport</shortCode>
+  </stateVariable>
+
+  <stateVariable>
+    <name>UserSending</name>
+    <sendEventsAttribute>no</sendEventsAttribute>
+    <dataType>string</dataType>
+    <defaultValue></defaultValue>
+    <shortCode>usersending</shortCode>
+  </stateVariable>
+
+  <stateVariable>
+    <name>UserReceiving</name>
+    <sendEventsAttribute>no</sendEventsAttribute>
+    <dataType>string</dataType>
+    <defaultValue></defaultValue>
+    <shortCode>userreceiving</shortCode>
+  </stateVariable>
+
+  <stateVariable>
+    <name>MessagesSent</name>
+    <sendEventsAttribute>no</sendEventsAttribute>
+    <dataType>string</dataType>
+    <defaultValue></defaultValue>
+    <shortCode>messagessent</shortCode>
+  </stateVariable>
+
+</serviceStateTable>
+
+<actionList>
+
+  <action>
+    <name>SendMail</name>
+    <argumentList>
+      <argument>
+        <name>subject</name>
+        <direction>in</direction>
+      </argument>
+      <argument>
+        <name>body</name>
+        <direction>in</direction>
+      </argument>
+    </argumentList>
+  </action>
+  
+</actionList>
+
+</scpd>
