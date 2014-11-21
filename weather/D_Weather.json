@@ -1,0 +1,719 @@
+{
+    "flashicon": "icons\/generic_sensor.swf",
+    "imgIconBody": "",
+    "imgIconDimmable": "",
+    "imgIconTurnable": "",
+    "imgIconMin": "",
+    "imgIconMax": "",
+    "halloIconsDir": "pics\/hallo",
+    "inScene": "1",
+    "DisplayStatus": {},
+    "doc_url": {
+        "doc_language": 1,
+        "doc_manual": 1,
+        "doc_version": 1,
+        "doc_platform": 0,
+        "doc_page": "devices"
+    },
+    "Tabs": [
+        {
+            "Label": {
+                "lang_tag": "tabname_control",
+                "text": "Settings"
+            },
+            "Position": "0",
+            "TabType": "flash",
+            "SceneGroup": [
+                {
+                    "id": "1",
+                    "top": ".5",
+                    "left": "0",
+                    "x": "1",
+                    "y": "1"
+                },
+                {
+                    "id": "2",
+                    "top": "2",
+                    "left": "0",
+                    "x": "1",
+                    "y": "1"
+                }
+            ],
+            "ControlGroup": [
+                {
+                    "id": "1",
+                    "scenegroup": "1"
+                },
+                {
+                    "id": "2",
+                    "scenegroup": "2",
+		    "isSingle": "1"
+                }
+            ],
+            "Control": [
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Weather Provider"
+                    },
+                    "Display": {
+                        "Top": 20,
+                        "Left": 300,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "variable",
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "ProviderName",
+                        "Top": 36,
+                        "Left": 300,
+                        "Width": 240,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Provider Key: "
+                    },
+                    "Display": {
+                        "Top": 60,
+                        "Left": 300,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "variable",
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "ProviderKey",
+                        "Top": 60,
+                        "Left": 420,
+                        "Width": 100,
+                        "Height": 20
+                    }
+                },
+               
+               
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Display Units"
+                    },
+                    "Display": {
+                        "Top": 20,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "button",
+                    "Label": {
+                        "lang_tag": "cmd_unlock",
+                        "text": "Metric"
+                    },
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "Metric",
+                        "Value": "1",
+                        "Top": 36,
+                        "Left": 50,
+                        "Width": 75,
+                        "Height": 18
+                    },
+                    "Command": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Action": "SetUnitsMetric",
+                        "Parameters": []
+                    }
+                },
+                {
+                    "ControlType": "button",
+                    "Label": {
+                        "lang_tag": "cmd_unlock",
+                        "text": "US Units"
+                    },
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "Metric",
+                        "Value": "0",
+                        "Top": 36,
+                        "Left": 135,
+                        "Width": 75,
+                        "Height": 18
+                    },
+                    "Command": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Action": "SetUnitsUS",
+                        "Parameters": []
+                    }
+                },
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Location: "
+                    },
+                    "Display": {
+                        "Top": 90,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "variable",
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "LocationUsedText",
+                        "Top": 90,
+                        "Left": 120,
+                        "Width": 100,
+                        "Height": 20
+                    }
+                },
+               
+                {
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Last Update:"
+                    },
+                    "Display": {
+                        "Top": 105,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlType": "variable",
+                    "Display": {
+                        "Service": "urn:micasaverde-com:serviceId:HaDevice1",
+                        "Variable": "LastUpdate",
+                        "Top": 105,
+                        "Left": 210,
+                        "Width": 100,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlGroup": "2",
+                    "ControlType": "button",
+                    "Label": {
+                        "lang_tag": "refreshCache",
+                        "text": "Update"
+                    },
+                    "top": "0",
+                    "left": "0",
+                    "x": "1",
+                    "y": "1",
+                    "Display": {
+                        "Value": "1",
+                        "Top": 36,
+                        "Left": 220,
+                        "Width": 75,
+                        "Height": 18
+                    },
+                    "Command": {
+                        "Service": "urn:micasaverde-com:serviceId:HaDevice1",
+                        "Action": "Poll",
+                        "Parameters": [
+                            {
+                                "Name": "updateCheck",
+                                "Value": "1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "ControlGroup": "1",
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Conditions"
+                    },
+                    "top": "0",
+                    "left": "0",
+                    "x": "1",
+                    "y": "1",
+                    "text_align": "left",
+                    "Display": {
+                        "Top": 180,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlGroup": "1",
+                    "ControlType": "variable",
+                    "top": "0",
+                    "left": "1",
+                    "x": "1",
+                    "y": "1",
+                    "text_align": "left",
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "Condition",
+                        "Top": 200,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlGroup": "1",
+                    "ControlType": "label",
+                    "Label": {
+                        "lang_tag": "device_settings_page",
+                        "text": "Wind"
+                    },
+                    "top": "1",
+                    "left": "0",
+                    "x": "1",
+                    "y": "1",
+                    "text_align": "left",
+                    "Display": {
+                        "Top": 220,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlGroup": "1",
+                    "ControlType": "variable",
+                    "top": "1",
+                    "left": "1",
+                    "x": ".5",
+                    "y": "1",
+                    "text_align": "left",
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "WindDirection",
+                        "Top": 240,
+                        "Left": 50,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                },
+                {
+                    "ControlGroup": "1",
+                    "ControlType": "variable",
+                    "top": "1",
+                    "left": "1.5",
+                    "x": ".5",
+                    "y": "1",
+                    "text_align": "left",
+                    "Display": {
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Variable": "WindSpeed",
+                        "Top": 240,
+                        "Left": 100,
+                        "Width": 120,
+                        "Height": 20
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "lang_tag": "advanced",
+                "text": "Advanced"
+            },
+            "Position": "2",
+            "TabType": "javascript",
+            "ScriptName": "shared.js",
+            "Function": "advanced_device"
+        }
+    ],
+    "DeviceType": "urn:demo-micasaverde-com:device:weather:1",
+    "eventList2": [
+        {
+            "id": 1,
+            "label": {
+                "lang_tag": "weather_condition",
+                "text": "Weather Condition (Detailed)"
+            },
+            "serviceId": "urn:upnp-micasaverde-com:serviceId:Weather1",
+            "argumentList": [
+                {
+                    "id": 1,
+                    "dataType": "string",
+                    "defaultValue": "",
+                    "allowedValueList": [
+                        {
+                            "value": "Chance of Showers",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_chance_of_showers",
+                                "text": "_DEVICE_NAME_: Condition is 'Chance of Showers'"
+                            }
+                        },
+                        {
+                            "value": "Chance of Snow",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_chance_of_snow",
+                                "text": "_DEVICE_NAME_: Condition is 'Chance of Snow'"
+                            }
+                        },
+                        {
+                            "value": "Chance of Storm",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_chance_of_storm",
+                                "text": "_DEVICE_NAME_: Condition is 'Chance of Storm'"
+                            }
+                        },
+                        {
+                            "value": "Clear",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_clear",
+                                "text": "_DEVICE_NAME_: Condition is 'Clear'"
+                            }
+                        },
+                        {
+                            "value": "Cloudy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_cloudy",
+                                "text": "_DEVICE_NAME_: Condition is 'Cloudy'"
+                            }
+                        },
+                        {
+                            "value": "Drizzle",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_drizzle",
+                                "text": "_DEVICE_NAME_: Condition is 'Drizzle'"
+                            }
+                        },
+                        {
+                            "value": "Flurries",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_flurries",
+                                "text": "_DEVICE_NAME_: Condition is 'Flurries'"
+                            }
+                        },
+                        {
+                            "value": "Fog",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_fog",
+                                "text": "_DEVICE_NAME_: Condition is 'Fog'"
+                            }
+                        },
+                        {
+                            "value": "Freezing Drizzle",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_freezing_drizzle",
+                                "text": "_DEVICE_NAME_: Condition is 'Freezing Drizzle'"
+                            }
+                        },
+                        {
+                            "value": "Freezing Rain",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_freezing_rain",
+                                "text": "_DEVICE_NAME_: Condition is 'Freezing Rain'"
+                            }
+                        },
+                        {
+                            "value": "Haze",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_haze",
+                                "text": "_DEVICE_NAME_: Condition is 'Haze'"
+                            }
+                        },
+                        {
+                            "value": "Heavy Rain",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_heavy_rain",
+                                "text": "_DEVICE_NAME_: Condition is 'Heavy Rain'"
+                            }
+                        },
+                        {
+                            "value": "Ice/Snow",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_ice_snow",
+                                "text": "_DEVICE_NAME_: Condition is 'Ice/Snow'"
+                            }
+                        },
+                        {
+                            "value": "Isolated Thunderstorms",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_isolated_thunderstorms",
+                                "text": "_DEVICE_NAME_: Condition is 'Isolated Thunderstorms'"
+                            }
+                        },
+                        {
+                            "value": "Light rain",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_light_rain",
+                                "text": "_DEVICE_NAME_: Condition is 'Light rain'"
+                            }
+                        },
+                        {
+                            "value": "Light snow",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_light_snow",
+                                "text": "_DEVICE_NAME_: Condition is 'Light snow'"
+                            }
+                        },
+                        {
+                            "value": "Mostly Cloudy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_mostly_cloudy",
+                                "text": "_DEVICE_NAME_: Condition is 'Mostly Cloudy'"
+                            }
+                        },
+                        {
+                            "value": "Mostly Sunny",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_mostly_sunny",
+                                "text": "_DEVICE_NAME_: Condition is 'Mostly Sunny'"
+                            }
+                        },
+                        {
+                            "value": "Overcast",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_overcast",
+                                "text": "_DEVICE_NAME_: Condition is 'Overcast'"
+                            }
+                        },
+                        {
+                            "value": "Partly Cloudy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_partly_cloudy",
+                                "text": "_DEVICE_NAME_: Condition is 'Partly Cloudy'"
+                            }
+                        },
+                        {
+                            "value": "Partly Sunny",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_partly_sunny",
+                                "text": "_DEVICE_NAME_: Condition is 'Partly Sunny'"
+                            }
+                        },
+                        {
+                            "value": "Rain",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_rain",
+                                "text": "_DEVICE_NAME_: Condition is 'Rain'"
+                            }
+                        },
+                        {
+                            "value": "Rain and Snow",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_rain_and_snow",
+                                "text": "_DEVICE_NAME_: Condition is 'Rain and Snow'"
+                            }
+                        },
+                        {
+                            "value": "Rain Showers",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_rain_showers",
+                                "text": "_DEVICE_NAME_: Condition is 'Rain Showers'"
+                            }
+                        },
+                        {
+                            "value": "Scattered Showers",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_scattered_showers",
+                                "text": "_DEVICE_NAME_: Condition is 'Scattered Showers'"
+                            }
+                        },
+                        {
+                            "value": "Showers",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_showers",
+                                "text": "_DEVICE_NAME_: Condition is 'Showers'"
+                            }
+                        },
+                        {
+                            "value": "Snow",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_snow",
+                                "text": "_DEVICE_NAME_: Condition is 'Snow'"
+                            }
+                        },
+                        {
+                            "value": "Snow Showers",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_snow_showers",
+                                "text": "_DEVICE_NAME_: Condition is 'Snow Showers'"
+                            }
+                        },
+                        {
+                            "value": "Snow Storm",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_snow_storm",
+                                "text": "_DEVICE_NAME_: Condition is 'Snow Storm'"
+                            }
+                        },
+                        {
+                            "value": "Sunny",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_sunny",
+                                "text": "_DEVICE_NAME_: Condition is 'Sunny'"
+                            }
+                        },
+                        {
+                            "value": "Thunderstorm",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_thunderstorm",
+                                "text": "_DEVICE_NAME_: Condition is 'Thunderstorm'"
+                            }
+                        },
+                        {
+                            "value": "Windy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_windy",
+                                "text": "_DEVICE_NAME_: Condition is 'Windy'"
+                            }
+                        }
+                    ],
+                    "name": "Condition",
+                    "comparisson": "=",
+                    "prefix": {
+                        "lang_tag": "condition",
+                        "text": "Condition:"
+                    },
+                    "suffix": {}
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "label": {
+                "lang_tag": "weather_condition_group",
+                "text": "Weather Conditions (Grouped)"
+            },
+            "serviceId": "urn:upnp-micasaverde-com:serviceId:Weather1",
+            "argumentList": [
+                {
+                    "id": 1,
+                    "dataType": "string",
+                    "defaultValue": "",
+                    "allowedValueList": [
+                        {
+                            "value": "clear",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_clear",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Clear'"
+                            }
+                        },
+                        {
+                            "value": "cloudy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_cloudy",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Cloudy/Overcast'"
+                            }
+                        },
+                        {
+                            "value": "flurries",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_flurries",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Flurries'"
+                            }
+                        },
+                        {
+                            "value": "fog",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_fog",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Fog'"
+                            }
+                        },
+                        {
+                            "value": "haze",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_haze",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Haze'"
+                            }
+                        },
+                        {
+                            "value": "mostlycloudy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_mostly_cloudy",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Mostly Cloudy'"
+                            }
+                        },
+                        {
+                            "value": "mostlysunny",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_mostly_sunny",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Mostly Sunny'"
+                            }
+                        },
+                        {
+                            "value": "partlycloudy",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_partly_cloudy",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Partly Cloudy/Scattered Clouds'"
+                            }
+                        },
+                        {
+                            "value": "partlysunny",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_partly_sunny",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Partly Sunny'"
+                            }
+                        },
+                        {
+                            "value": "sleet",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_freezing_rain",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Freezing Rain/Sleet'"
+                            }
+                        },
+                        {
+                            "value": "rain",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_rain",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Rain'"
+                            }
+                        },
+                        {
+                            "value": "snow",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_snow",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Snow'"
+                            }
+                        },
+                        {
+                            "value": "sunny",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_sunny",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Sunny'"
+                            }
+                        },
+                        {
+                            "value": "tstorms",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_thunderstorm",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Thunderstorm'"
+                            }
+                        },
+                        {
+                            "value": "unknown",
+                            "HumanFriendlyText": {
+                                "lang_tag": "hft_group_unknown",
+                                "text": "_DEVICE_NAME_: Condition Group is 'Unknown'"
+                            }
+                        }
+                    ],
+                    "name": "ConditionGroup",
+                    "comparisson": "=",
+                    "prefix": {
+                        "lang_tag": "condition_group",
+                        "text": "Condition Group:"
+                    },
+                    "suffix": {}
+                }
+            ]
+        }
+    ]
+}

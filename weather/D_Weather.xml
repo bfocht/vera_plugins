@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:demo-micasaverde-com:device:weather:1</deviceType>
+    <staticJson>D_Weather.json</staticJson> 
+    <friendlyName>World Weather</friendlyName>
+    <manufacturer>World Weather</manufacturer>
+    <manufacturerURL>http://en.wikipedia.org/wiki/Weather</manufacturerURL>
+    <modelDescription>World Weather Device 1.0</modelDescription>
+    <modelName>World Weather</modelName>
+    <modelNumber>1.0</modelNumber>
+    <modelURL>http://en.wikipedia.org/wiki/Weather</modelURL>
+    <protocol>cr</protocol>
+    <handleChildren>1</handleChildren>
+    <UDN>uuid:Upnp-micasaverde-1_0-1234567890001</UDN>
+    <UPC>123456789</UPC>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-micasaverde-com:service:Weather:1</serviceType>
+        <serviceId>urn:upnp-micasaverde-com:serviceId:Weather1</serviceId>
+        <SCPDURL>S_Weather.xml</SCPDURL>
+      </service>
+    </serviceList>
+    <implementationList>
+      <implementationFile>I_WUIWeather.xml</implementationFile>
+    </implementationList>
+  </device>
+</root>
