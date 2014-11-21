@@ -20,8 +20,8 @@
 	</service>
     </serviceList>
     <friendlyName>GCal3 Sensor</friendlyName>
-    <manufacturer>stuartofmt</manufacturer>
-    <manufacturerURL>www.stuartofmt.com</manufacturerURL>
+    <manufacturer>pathfinder</manufacturer>
+    <manufacturerURL>www.pathfindertech.net</manufacturerURL>
     <modelDescription>GCal3 Sensor</modelDescription>
     <modelName>GCal3 Sensor</modelName>
     <modelNumber>3.0</modelNumber>

@@ -30,9 +30,10 @@
      <serviceId>urn:srs-com:serviceId:GCalIII</serviceId>
      <name>GCalCheck</name>
      <run>
-      luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
-      luup.variable_set(GCAL_SID, "gc_NextEvent","Checking ..." , lul_device)
-      luup.call_timer("GCalMain",1,1,"","")
+        luup.log(string.format("GCAL: Manual Check Calendar"))
+        luup.task(tostring("Manual Check Calendar"), 1, GC.description, GC.handle)
+        GC.interrupt = GC.interrupt + 1
+        GCalTimer(json.encode({"manual", "", GC.interrupt})) 
      </run>
   </action>
   <action>
@@ -45,8 +46,9 @@
       end
       GC.newCalendarID = trimString(lul_settings.new_gc_CalendarID)
       DEBUG(3,"User input Calendar ID = " .. lul_settings.new_gc_CalendarID)     
-      local _ = parseCalendarID(GC.newCalendarID)
-      luup.call_timer("GCalMain",1,1,"","")
+      parseCalendarID(GC.newCalendarID)
+      GC.interrupt = GC.interrupt + 1
+      GCalTimer(json.encode({"manual", "", GC.interrupt})) 
      </run>
   </action>
   </actionList>
