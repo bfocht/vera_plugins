@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+	<specVersion>
+		<major>1</major>
+		<minor>0</minor>
+	</specVersion>
+	<device>
+		<deviceType>urn:schemas-HHOD-svc:device:HHOD</deviceType>
+		<friendlyName>Home Heartbeat</friendlyName>
+		<serviceList>
+			<service>
+			  <serviceType>urn:schemas-HHOD-svc:device:HHOD:1</serviceType> 
+			  <serviceId>urn:upnp-hhod-svc:serviceId:HHOD1</serviceId> 
+			  <SCPDURL>S_Hhod.xml</SCPDURL> 
+			</service>
+		</serviceList>
+		<eventList /> 
+		<handleChildren>1</handleChildren> 
+		<implementationList>
+			<implementationFile>I_Hhod.xml</implementationFile>
+		</implementationList>
+	</device>
+</root>

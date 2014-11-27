@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<implementation>
+    <specVersion>
+        <major>1</major>
+        <minor>5</minor>
+    </specVersion>
+    <files>L_Hhod.lua</files>
+    <settings>
+        <protocol>crlf</protocol>
+    </settings>
+    <incoming>
+        <lua>incoming(lul_data)</lua>
+    </incoming>
+    <startup>startup</startup>
+    <actionList>
+
+    </actionList>
+</implementation>
