@@ -33,7 +33,7 @@
                     "ControlType": "label",
                     "Label": {
                         "lang_tag": "label_name",
-                        "text": "Wake-On-LAN Controller"
+                        "text": "Home Heartbeat Controller"
                     },
                     "top": "0",
                     "left": "0",
