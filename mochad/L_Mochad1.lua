@@ -454,7 +454,7 @@ end
 function incoming(lul_data)
 
      local data = tostring(lul_data)     
-     local t = split_deliminated_string(data,' ')
+     local t = split_deliminated_string(data,',')
      
      -- if you are messing around with mochad on the command line, or polling,
      -- this can happen!
@@ -462,10 +462,10 @@ function incoming(lul_data)
         return
      end
      
-     local rx_tx     = t[3]
-     local rx_type   = t[4]
-     local addr      = t[6]
-     local new_state = t[8]
+     local rx_tx     = t[1]
+     local rx_type   = t[2]
+     local addr      = t[3]
+     local new_state = t[4]
      local addr_found = false
      if (rx_tx == 'Rx') then
      
