@@ -355,9 +355,9 @@ function getEvent(eventlist)
   
   for i=1,numberEvents do
     -- get the start and end times
-    local eventStart = (eventlist[i]['start'].date or eventlist[i]['start'].dateTime)
-    local starttime = strToTime(eventStart)
-    local endtime = strToTime(eventlist[i]['end'].date or eventlist[i]['end'].dateTime)
+    
+    local starttime = strToTime(eventlist[i]['start'].date or eventlist[i]['start'].dateTime) + GC.timeZone
+    local endtime   = strToTime(eventlist[i]['end'].date or eventlist[i]['end'].dateTime) + GC.timeZone
     
     -- get the title and any start / stop delta or parameter
     local eventname = (eventlist[i]['summary'] or "No Name")
@@ -397,8 +397,8 @@ function checkGCal(https, json)
 
   -- Compute the delay in seconds before the next event starts
   local now = os.time()
-  local diff_start = gcalval[2] - now + GC.timeZone
-  local diff_end = gcalval[3] - now + GC.timeZone
+  local diff_start = gcalval[2] - now
+  local diff_end = gcalval[3] - now
 
   --event has already started
   if (diff_start < 0) then
@@ -477,7 +477,7 @@ function GCalTimer(data)
     luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, 54 )
     luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. os.date("%H:%M %b %d", endtime) , lul_device)
     --set the end timeout
-    local diff_end = endtime - os.time() + GC.timeZone
+    local diff_end = endtime - os.time()
     data = GC.json.encode({"end", stuff[2] ,GC.interrupt})
     luup.call_timer("GCalTimer", 1, diff_end, "", data)
   elseif (command == "end") then

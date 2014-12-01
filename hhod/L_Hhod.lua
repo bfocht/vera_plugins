@@ -21,7 +21,9 @@ local lastNewStateInterval = 60 * 3
 
 local child_id_lookup_table = {}
 local child_list_ptr
-local new_child_device = false
+local new_child_found = false
+local sync_child_devices = false
+local handle
 
 local controller_id
 
@@ -79,29 +81,35 @@ end
 function startup(lul_device)
    ipAddress = luup.devices[lul_device].ip
    controller_id = lul_device
-   
-  
-   if (ipAddress ~= "") then
-        log("Running Network Attached HHOD on " .. ipAddress)
-        luup.io.open(lul_device, ipAddress, ipPort)
-   else
-       log("Can not connect to hhod on " .. ipAddress)
-       return false, "Hhod", "Cannot connect to Hhod on " .. ipAddress
-   end
-  
-  child_list_ptr = luup.chdev.start(controller_id);
-  ------------------------------------------------------------
+   sync_child_devices = true
+
+   -----------------------------------------------------------
   -- Find my children and build lookup table of altid -> id
   ------------------------------------------------------------
   -- loop over all the devices registered on Vera
   child_id_lookup_table = {}
+  local numberChilds = 0
   for k, v in pairs(luup.devices) do
       -- if I am the parent device
       if v.device_num_parent == luup.device then
           debug('Found Child ID: ' .. k .. ' AltID: ' .. v.id)
           child_id_lookup_table[v.id] = k
+          numberChilds=numberChilds+1
       end
   end
+  luup.variable_set(HHOD_SID, "ChildDeviceCount", numberChilds, lul_device)
+
+  child_list_ptr = luup.chdev.start(controller_id);
+  if (ipAddress ~= "") then
+      log("Running Network Attached HHOD on " .. ipAddress)
+      luup.io.open(lul_device, ipAddress, ipPort)
+  else
+     log("Can not connect to hhod on " .. ipAddress)
+     return false, "Hhod", "Cannot connect to Hhod on " .. ipAddress
+  end
+  --kick off a status check
+  sendCommand("S")
+  handle = luup.task("Sync child devices", 1, "HHOD", -1)
 end
 
 ------------------------------------------------------------
@@ -117,7 +125,6 @@ function incoming(lul_data)
     if (os.time() - lastNewSate > lastNewStateInterval) then
       lastNewSate = os.time()
       sendCommand("S")
-      
     end
     return
   end
@@ -125,9 +132,16 @@ function incoming(lul_data)
   if (data == "STATE=DONE") then
     --finished reading through devices
     --this will reboot the device
-    if (new_child_device) then
+    if (sync_child_devices) then
+        luup.task("Finished child sync", 4, "HHOD", handle)
+        sync_child_devices = false
         luup.chdev.sync(controller_id, child_list_ptr)
-        new_child_device = false
+    end
+
+    if (new_child_found) then
+      new_child_found = false
+      sync_child_devices = true
+      sendCommand("S")
     end
     return
   end
@@ -144,26 +158,31 @@ function incoming(lul_data)
   local device_mac   = t[9]
 
   if device_type == 'Water Sensor' or device_type == 'Power Sensor' or device_type == 'Tilt Sensor' then
-    if child_id_lookup_table[device_mac] == nil then
-      debug('child device not found')
+    if (sync_child_devices) then
       luup.chdev.append(controller_id, child_list_ptr, device_mac, device_name, MOTION_SCHEMA, "D_MotionSensor1.xml", "", "", false)
-      new_child_device = true
       return
     end
-  end
 
-  --Water Sensors are reversed
-  if device_type == 'Water Sensor' then
-    if device_state == 'open' then
-      device_state = 'closed'
-    elseif device_state == 'closed' then
-      device_state = 'open'
+    if child_id_lookup_table[device_mac] == nil then
+      debug('child device not found')
+      new_child_found = true
+      return
     end
-  end
+    
+    --Water Sensors are reversed
+    if device_type == 'Water Sensor' then
+      if device_state == 'open' then
+        device_state = 'closed'
+      elseif device_state == 'closed' then
+        device_state = 'open'
+      end
+    end
 
-  if device_state == 'open' then
-    luup.variable_set(SECURITY_SID, "Tripped", 1, child_id_lookup_table[device_mac])
-  elseif device_state == 'closed' then
-    luup.variable_set(SECURITY_SID, "Tripped", 0, child_id_lookup_table[device_mac])
+    --update status
+    if device_state == 'open' then
+      luup.variable_set(SECURITY_SID, "Tripped", 1, child_id_lookup_table[device_mac])
+    elseif device_state == 'closed' then
+      luup.variable_set(SECURITY_SID, "Tripped", 0, child_id_lookup_table[device_mac])
+    end
   end
 end

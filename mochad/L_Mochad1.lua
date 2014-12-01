@@ -239,13 +239,16 @@ function startup(lul_device)
    -- Find my children and build lookup table of altid -> id
    ------------------------------------------------------------
    -- loop over all the devices registered on Vera
-   for k, v in pairs(luup.devices) do
+    local numberChilds = 0
+    for k, v in pairs(luup.devices) do
        -- if I am the parent device
        if v.device_num_parent == luup.device then
-           debug('Found Child ID: ' .. k .. ' AltID: ' .. v.id)
-           child_id_lookup_table[v.id] = k
+          debug('Found Child ID: ' .. k .. ' AltID: ' .. v.id)
+          child_id_lookup_table[v.id] = k
+          numberChilds=numberChilds+1
        end
    end
+   luup.variable_set(MOCHAD_SID, "ChildDeviceCount", numberChilds, lul_device)
    
 end
 

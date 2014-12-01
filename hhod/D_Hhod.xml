@@ -6,6 +6,7 @@
 	</specVersion>
 	<device>
 		<deviceType>urn:schemas-HHOD-svc:device:HHOD</deviceType>
+		<staticJson>D_Hhod.json</staticJson>
 		<friendlyName>Home Heartbeat</friendlyName>
 		<serviceList>
 			<service>

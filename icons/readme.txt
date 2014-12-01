@@ -1,0 +1,1 @@
+copy to /www/cmh/skins/defaults/icons

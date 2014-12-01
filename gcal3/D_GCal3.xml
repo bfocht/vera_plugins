@@ -8,16 +8,16 @@
     <deviceType>urn:schemas-srs-com:device:GCal:3</deviceType>
     <staticJson>D_GCal3.json</staticJson>
     <serviceList>
-	<service>
-		<serviceType>urn:schemas-srs-com:service:GCal:3</serviceType>
-		<serviceId>urn:srs-com:serviceId:GCalIII</serviceId>
-		<SCPDURL>S_GCal3.xml</SCPDURL>
-	</service>
-	<service>
-		<serviceType>urn:schemas-micasaverde-com:service:SecuritySensor:1</serviceType>
-		<serviceId>urn:micasaverde-com:serviceId:SecuritySensor1</serviceId>
-		<SCPDURL>S_SecuritySensor1.xml</SCPDURL>
-	</service>
+      <service>
+      	<serviceType>urn:schemas-srs-com:service:GCal:3</serviceType>
+      	<serviceId>urn:srs-com:serviceId:GCalIII</serviceId>
+      	<SCPDURL>S_GCal3.xml</SCPDURL>
+      </service>
+      <service>
+      	<serviceType>urn:schemas-micasaverde-com:service:SecuritySensor:1</serviceType>
+      	<serviceId>urn:micasaverde-com:serviceId:SecuritySensor1</serviceId>
+      	<SCPDURL>S_SecuritySensor1.xml</SCPDURL>
+      </service>
     </serviceList>
     <friendlyName>GCal3 Sensor</friendlyName>
     <manufacturer>pathfinder</manufacturer>
