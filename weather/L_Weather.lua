@@ -15,7 +15,7 @@ local SERVICE_LOC_URL = "https://api.wunderground.com/api/%s/conditions/forecast
 local SERVICE_LL_URL = "https://api.wunderground.com/api/%s/conditions/forecast/q/%#.6f,%#.6f.xml"
 
 local MSG_CLASS = "WUIWeather"
-
+local EMAIL_DEVICE_ID
 local LONGITUDE
 local LATITUDE
 local METRIC
@@ -156,7 +156,7 @@ function refreshCache()
             result.windDirection,
             windSpeed)
 
-        luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Weather Update', body = weather_string }, 54)
+        luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Weather Update', body = weather_string }, EMAIL_DEVICE_ID)
         -- Store the current timestamp
         local ta = os.date("*t")
         local s = string.format("%d-%02d-%02d %02d:%02d:%02d", ta.year, ta.month, ta.day, ta.hour, ta.min, ta.sec)
@@ -191,12 +191,30 @@ end
 
 function startupDeferred()
     
-    metric = luup.variable_get(WEATHER_SERVICE, "Metric", parentDevice)
+    local metric = luup.variable_get(WEATHER_SERVICE, "Metric", parentDevice)
     if (metric == nil or metric == "") then
         luup.variable_set(WEATHER_SERVICE, "Metric", "0", parentDevice)
     else
         METRIC = metric == 1
     end
+
+    local location = luup.variable_get(WEATHER_SERVICE, "Location", PARENT_DEVICE)
+    if (location == nil or location == "") then
+        luup.variable_set(WEATHER_SERVICE, "Location", "", PARENT_DEVICE)
+    else
+        t = split_deliminated_string(location,';')
+        if t ~= nil then
+            LATITUDE = t[1]
+            LONGITUDE = t[2]
+        end
+    end
+
+    local n1 = luup.variable_get(WEATHER_SERVICE, "EmailDeviceNumber", lul_device)
+    if (n1 == nil or n1 == "") then
+        n1 = 0
+        luup.variable_set(WEATHER_SERVICE, "EmailDeviceNumber","", lul_device)
+    end
+    EMAIL_DEVICE_ID = tonumber(n1)
 
     PROVIDERKEY = luup.variable_get(WEATHER_SERVICE, "ProviderKey", PARENT_DEVICE)
     if (PROVIDERKEY == nil or PROVIDERKEY == "") then
@@ -207,20 +225,6 @@ function startupDeferred()
         local msg = "Registration Key needed from Weather Underground (www.wunderground.com)"
         task(msg, TASK_ERROR_PERM)
         return
-    end
-
-    local location = luup.variable_get(WEATHER_SERVICE, "Location", PARENT_DEVICE)
-    if (location == nil or location == "") then
-        luup.variable_set(WEATHER_SERVICE, "Location", "", PARENT_DEVICE)
-        local msg = "Lat/Lon location needed"
-        task(msg, TASK_ERROR_PERM)
-        return
-    else
-        t = split_deliminated_string(location,';')
-        if t ~= nil then
-            LATITUDE = t[1]
-            LONGITUDE = t[2]
-        end
     end
 end
 

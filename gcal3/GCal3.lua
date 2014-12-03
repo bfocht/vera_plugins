@@ -2,6 +2,7 @@ local GCAL_VERSION = "V 2.0"
 local GCAL_SID = "urn:srs-com:serviceId:GCalIII"
 local SECURITY_SID = "urn:micasaverde-com:serviceId:SecuritySensor1"
 local SWITCHPWR_SID = "urn:upnp-org:serviceId:SwitchPower1"
+local EMAIL_DEVICE_ID
 -- Variables that are 'global' for this plugin
 local GC = {}
 --Setup and file variables
@@ -11,11 +12,9 @@ GC.plugin_name = "GCal3" -- Do not change for this plugin
 
 GC.libpath = "/usr/lib/lua/" -- default vera directory for modules
 GC.basepath = "/etc/cmh-ludl/" -- default vera directory for uploads
-GC.jwt = GC.libpath .. "googlejwt.sh"
 GC.jsonlua = GC.libpath .. "json.lua"
-GC.pluginpath = GC.basepath .. GC.plugin_name .."/" -- putting the credentials in a sub directory to keep things uncluttered
-GC.credentialfile = GC.plugin_name .. ".json" -- the service account credential file downloaded from google developer console
-GC.pemfile = GC.pluginpath .. GC.plugin_name ..".pem" -- certificate to this file
+GC.credentialfile = GC.plugin_name .. ".json"
+GC.pemfile = "/tmp/" .. GC.plugin_name ..".pem" -- certificate to this file
 
 -- Main plugin Variables
 GC.timeZone = 0
@@ -30,6 +29,7 @@ GC.interrupt = 1
 GC.handle = 0
 GC.Interval = 60 * 60 * 6
 GC.json = require("json")
+
 
 -- Utility Functions
 function DEBUG(level,s)
@@ -89,38 +89,11 @@ function writetofile (filename,package)
 end
 
 -- Authorization related functions
-
 function checkforcredentials(json)
   DEBUG(3,"Function: checkforcredentials")
-
-  -- check to see if there is a new credential file
-  -- when you upload the credential  vera compresses it using lzo
-  -- so it needs to be decompressed
-  -- the credentials file needs to be split into component parts
-  local newcredentials = false
-  
-  local command = "ls " .. GC.basepath .. GC.credentialfile .. ".lzo"
-  local result = os.execute(command) -- check to see if there is a new credential file
-  DEBUG(3,"Command " .. command .. " returned " ..result)
-  
-  if (result == 0) then
-  newcredentials = true 
-    --decompress the lzo file
-    command = "pluto-lzo d " .. GC.basepath .. GC.credentialfile .. ".lzo " .. GC.pluginpath .. GC.credentialfile
-    result = os.execute(command)
-    DEBUG(3,"Command " .. command .. " returned " ..result)
-    if result ~= 0 then
-      DEBUG(3,"Could not decompress the file - " .. GC.basepath .. GC.credentialfile .. ".lzo")  
-    return nil
-    end
-    -- don't need the lzo file any more so delete it
-    command = "rm -f " .. GC.basepath .. GC.credentialfile .. ".lzo"
-    result = os.execute(command)
-    DEBUG(3,"Command " .. command .. " returned " ..result) -- remove the lzo file
-  end 
   
   --make sure we have a credentials file
-  command = "ls " .. GC.pluginpath .. GC.credentialfile
+  command = "ls " ..  GC.basepath .. GC.credentialfile
   result = os.execute(command) -- check to see if there is a file
   DEBUG(3,"Command " .. command .. " returned " ..result)
   if result ~= 0 then -- we don't have a credential file
@@ -128,10 +101,8 @@ function checkforcredentials(json)
     return nil
   end
   
-  -- now we can decompose the credentialsfile
-  
-  local contents = readfromfile(GC.pluginpath .. GC.credentialfile)
-    
+  local contents = readfromfile(GC.basepath .. GC.credentialfile)
+
   if (not string.find(contents, '"type": "service_account"')) then
     DEBUG(3,"The credentials are not for a service account")
     return nil
@@ -147,7 +118,10 @@ function checkforcredentials(json)
   
   local credentials = json.decode(contents)
   
-  if newcredentials then -- get the private key and write to file
+  --make sure we have a pem file file
+  command = "ls " ..  GC.pemfile
+  result = os.execute(command)
+  if result ~= 0 then
     local pem = credentials.private_key
     local command = "rm -f ".. GC.pemfile
     local result = os.execute(command) -- delete the old one
@@ -306,7 +280,7 @@ function requestCalendar(startmin, startmax, https, json)
   if (code ~= 200) then -- anything other than 200 is an error
     local errorMessage = "http error code: " .. code
     DEBUG(3, errorMessage)
-    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = errorMessage, body = errorMessage }, 54 )
+    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = errorMessage, body = errorMessage }, EMAIL_DEVICE_ID)
     luup.variable_set(GCAL_SID, "gc_NextEvent",errorMessage , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","", lul_device)
   return nil
@@ -317,7 +291,7 @@ function requestCalendar(startmin, startmax, https, json)
   local goodjson = string.find(body, "items")
   if (not goodjson) then
       DEBUG(1,"Calendar data problem - no items tag. Retry later...")
-      luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = "Calendar data problem - no items tag", body = body }, 54 )
+      luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = "Calendar data problem - no items tag", body = body }, EMAIL_DEVICE_ID)
       luup.variable_set(GCAL_SID, "gc_NextEvent","Bad Calendar data" , lul_device)
       luup.variable_set(GCAL_SID, "gc_NextEventTime", "", lul_device)
     return nil 
@@ -474,7 +448,7 @@ function GCalTimer(data)
     luup.variable_set(SECURITY_SID, "Tripped", 1, lul_device)
     luup.call_action(sid, "SetTarget",{newTargetValue = "1"}, tonumber(dev_num))
     luup.variable_set(GCAL_SID, "gc_displaystatus", 100, lul_device)
-    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, 54 )
+    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, EMAIL_DEVICE_ID)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. os.date("%H:%M %b %d", endtime) , lul_device)
     --set the end timeout
     local diff_end = endtime - os.time()
@@ -486,7 +460,7 @@ function GCalTimer(data)
     luup.variable_set(SECURITY_SID, "Tripped", 0, lul_device)
     luup.call_action(sid, "SetTarget",{newTargetValue = "0"}, tonumber(dev_num))
     luup.variable_set(GCAL_SID, "gc_displaystatus", 0, lul_device)
-    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, 54 )
+    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, EMAIL_DEVICE_ID)
     luup.call_timer("GCalTimer", 1, 100, "", GC.json.encode({"timeout", "", GC.interrupt}))
   else
     CheckCalendar()
@@ -544,26 +518,20 @@ function setupVariables()
   local s1 = ""
   local n1 = 0
   
-  -- n1 = luup.variable_get(GCAL_SID,"gc_Interval", lul_device)
-  -- if ((n1 == nil) or (tonumber(n1) < 1)) then 
-  --   n1 = 60 * 60 * 6  -- defaults to 3 hrs
-  --   luup.variable_set(GCAL_SID, "gc_Interval",n1, lul_device)
-  -- end
-  -- GC.Interval = 6 * 60 * 60
-  
   s1 = luup.variable_get(GCAL_SID, "gc_CalendarID", lul_device)
   if (s1 == nil) then
     s1 = "" 
     luup.variable_set(GCAL_SID, "gc_CalendarID",s1, lul_device)
   end
   GC.CalendarID = s1
-  
-  n1 = luup.variable_get(GCAL_SID, "gc_debug", lul_device)
-  if ((n1 == nil) or (tonumber(n1) < 1)) then 
-    n1 = 1
-    luup.variable_set(GCAL_SID, "gc_debug",n1, lul_device)
-  end 
-  GC.debug = tonumber(n1)
+
+  n1 = luup.variable_get(GCAL_SID, "EmailDeviceID", lul_device)
+  if (n1 == nil or n1 == "") then
+    n1 = 0
+    luup.variable_set(GCAL_SID, "EmailDeviceID","", lul_device)
+  end
+  EMAIL_DEVICE_ID = tonumber(n1)
+
   
   n1 = luup.variable_get(GCAL_SID, "gc_displaystatus", lul_device)
   if ((n1 == nil) or n1 == "" or (tonumber(n1) > 100)) then

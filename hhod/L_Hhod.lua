@@ -119,7 +119,7 @@ end
 ------------------------------------------------------------
 function incoming(lul_data)
   local data = tostring(lul_data)
-  log(data)
+  --debug(data)
 
   if (data == "STATE=NEW") then
     if (os.time() - lastNewSate > lastNewStateInterval) then
