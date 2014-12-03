@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<implementation>
+    <functions>
+        local SERVER_FILES_PATH = "http://download.mios.com/fixes/"
+        local UI_VERSION_FILE = "/etc/cmh/ui"
+        local FILES_TO_UPDATE = {
+            "/etc/cmh/network_pnp_sys.xml",
+            "/etc/cmh/zwave_products_sys.xml"
+        }
+        local TEMP_FILE_NAME = "/tmp/tmp.mios_updater"
+        local TASK_HANDLE = -1
+
+        local MIOS_UPDATER_SID = "urn:micasaverde-com:serviceId:MiosUpdater1"
+        local CHECK_INTERVAL = 24 * 60 * 60 -- 24 hours
+        local LUL_DEVICE
+        
+        function Startup (lul_device)
+            LUL_DEVICE = lul_device
+            luup.log( "MiosUpdater::Update Device #".. LUL_DEVICE .."-".. luup.devices[LUL_DEVICE].description )
+        end
+
+        function Update()
+            TASK_HANDLE = luup.task("Check Updates", 1, "MIOS", TASK_HANDLE)
+            
+            -- Check how much time has passed since we checked for new files.
+            -- We only need to check for new files once a day.
+            local lastCheck = tonumber( luup.variable_get( MIOS_UPDATER_SID, "LastCheck", LUL_DEVICE ), 10 ) or 0
+            if os.difftime( os.time(), lastCheck ) &lt; CHECK_INTERVAL then
+                luup.log( "MiosUpdater::Update Too soon since last check. Return" )
+                luup.task("Too soon since last check", 4, "MIOS", TASK_HANDLE)
+                return
+            end
+            -- Read the UI version, to know which file to download.
+            local file = io.open( UI_VERSION_FILE )
+            local uiVersion = file:read( "*n" )
+            file:close()
+            if not uiVersion or uiVersion == 0 then
+                luup.log( "MiosUpdater::Update ERROR: Invalid UI version: ".. tostring( uiVersion ) ..". Return" )
+                luup.task("Invalid UI version", 2, "MIOS", TASK_HANDLE)
+                return
+            end
+
+            -- Check for updated files.
+            for _, fullFileName in pairs( FILES_TO_UPDATE ) do
+                local fileName = fullFileName:match( "/([%w_.]+)$" )
+                local fileUrl = SERVER_FILES_PATH .."ui".. uiVersion .."/".. fileName ..".lzo"
+                luup.log( "MiosUpdater::Update Downloading file: ".. fileUrl )
+                local status, content = luup.inet.wget( fileUrl )
+                if status ~= 0 then
+                    luup.log( "MiosUpdater::Update ERROR: Failed to download file" )
+                elseif content:len() &lt;= 0 then
+                    luup.log( "MiosUpdater::Update ERROR: Invalid file size" )
+                else
+                    -- Everything OK, write the downloaded data in a file.
+                    local revisionServer = ""
+                    local revisionLocal = ""
+                    file = io.open( TEMP_FILE_NAME ..".lzo", "wb" )
+                    file:write( content )
+                    file:close()
+                    os.execute( "pluto-lzo d ".. TEMP_FILE_NAME ..".lzo ".. TEMP_FILE_NAME )
+                    file = io.open( TEMP_FILE_NAME)
+                    revisionServer = file:read()
+                    file:close()
+                    revisionServer  = revisionServer:match("(%d+)") or ""
+                    if revisionServer == "" then
+                        luup.log("MiosUpdater::Update Server file " .. TEMP_FILE_NAME..".lzo is older then the local one .. no need for updating this file")
+                    else
+                        file = io.open(fullFileName)
+                        revisionLocal = file:read()
+                        revisionLocal = revisionLocal:match("(%d+)") or ""
+                        file:close()
+                        if revisionLocal == "" or tonumber(revisionLocal) &lt; tonumber(revisionServer) then
+                            -- Backup the current file.
+                            os.execute( "mv -f ".. fullFileName .." ".. fullFileName ..".bak" )
+                            -- Replace the current file with the new one.
+                            os.execute( "mv -f ".. TEMP_FILE_NAME .." ".. fullFileName )
+                            -- Remove the temporary file.
+                            os.execute( "rm -f ".. TEMP_FILE_NAME ..".lzo" )
+                            luup.log( "MiosUpdater::Update Successfully updated file: ".. fullFileName )
+                        else
+                            luup.log( "MiosUpdater::Update New file is the same or is older then the current one, nothing to do" )
+                        end
+                    end
+                end -- end if status ~= 0
+            end -- end for
+
+            luup.variable_set( MIOS_UPDATER_SID, "LastCheck", os.time(), LUL_DEVICE )
+            luup.task("Finished Updates", 4, "MIOS", TASK_HANDLE)
+        end
+    </functions>
+    <startup>Startup</startup>
+    <actionList>
+        <action>
+          <serviceId>urn:micasaverde-com:serviceId:MiosUpdater1</serviceId>
+          <name>CheckUpdate</name>
+          <run>
+            luup.call_timer("Update", 1, "1", "")
+          </run>
+        </action>
+    </actionList>
+</implementation>
