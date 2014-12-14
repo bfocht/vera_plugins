@@ -34,12 +34,12 @@ local function trim(s)
   return s:gsub("^%s*", ""):gsub("%s*$","")
 end
 
------------------------------------------------------------- 
+------------------------------------------------------------
 local function log(text, level)
     luup.log("HHOD: " .. text, (level or 1))
 end
 
------------------------------------------------------------- 
+------------------------------------------------------------
 local function debug(text)
   if (DEBUG_MODE == true) then
       log((text or "<empty>"), 50)
@@ -168,7 +168,7 @@ function incoming(lul_data)
       new_child_found = true
       return
     end
-    
+
     --Water Sensors are reversed
     if device_type == 'Water Sensor' then
       if device_state == 'open' then

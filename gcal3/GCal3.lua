@@ -1,4 +1,4 @@
-local GCAL_VERSION = "V 2.0"  
+local GCAL_VERSION = "V 2.0"
 local GCAL_SID = "urn:srs-com:serviceId:GCalIII"
 local SECURITY_SID = "urn:micasaverde-com:serviceId:SecuritySensor1"
 local SWITCHPWR_SID = "urn:upnp-org:serviceId:SwitchPower1"
@@ -56,7 +56,7 @@ end
 
 -- system, file i/o and related functions
 
-function os_command (command) 
+function os_command (command)
  local stdout = io.popen(command)
     local result = stdout:read("*a")
     stdout:close()
@@ -67,13 +67,13 @@ function readfromfile(filename)
   local command = "ls " .. filename
   local result = os.execute(command) -- does the file exist
   DEBUG(3,"Command " .. command .. " returned " ..result)
-  
+
   if (result ~= 0) then -- return since we cannot read the file
     luup.variable_set(GCAL_SID, "gc_NextEvent",string.gsub(filename,"/(.*)/","") .. " ??" , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
     return nil
   end
-  
+
   local f = io.open(filename, "r")
   if not f then return nil end
   local c = f:read "*a"
@@ -85,13 +85,13 @@ function writetofile (filename,package)
   local f = assert(io.open(filename, "w"))
   local t = f:write(package)
   f:close()
-  return t    
+  return t
 end
 
 -- Authorization related functions
 function checkforcredentials(json)
   DEBUG(3,"Function: checkforcredentials")
-  
+
   --make sure we have a credentials file
   command = "ls " ..  GC.basepath .. GC.credentialfile
   result = os.execute(command) -- check to see if there is a file
@@ -100,7 +100,7 @@ function checkforcredentials(json)
     DEBUG(3,"Could not find the credentials file: ")
     return nil
   end
-  
+
   local contents = readfromfile(GC.basepath .. GC.credentialfile)
 
   if (not string.find(contents, '"type": "service_account"')) then
@@ -115,9 +115,9 @@ function checkforcredentials(json)
     DEBUG(3,"The credentials file does not contain a client email")
     return nil
   end
-  
+
   local credentials = json.decode(contents)
-  
+
   --make sure we have a pem file file
   command = "ls " ..  GC.pemfile
   result = os.execute(command)
@@ -132,30 +132,30 @@ function checkforcredentials(json)
       return nil
     end
   end
-  
-   -- get the service account email name 
+
+   -- get the service account email name
   GC.ClientEmail = credentials.client_email
   return true
 end
 
 function get_access_token(https,json)
-  DEBUG(3, "Function: get_access_token")
-  -- First check to see if we have an existing unexpired token
-  -- get the access token from the file
   local url = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" .. GC.access_token
   local body, code, _,status = https.request(url) -- check the token status
-  DEBUG(2,"Token info status: " .. status)
-    if (code ==200) then  
-      local tokencheck = json.decode(body)
-      local time_to_expire = tokencheck.expires_in
-      DEBUG(2,"Token will expire in " .. time_to_expire .." sec")
-      if (time_to_expire > 10) then -- 10 seconds gives us some leeway
-        return GC.access_token -- the current token was still valid
-      end
+  if (status == nil or code == nil) then
+    --request failed
+    return nil
+  end
+  if (code ==200) then
+    local tokencheck = json.decode(body)
+    local time_to_expire = tokencheck.expires_in
+    DEBUG(2,"Token will expire in " .. time_to_expire .." sec")
+    if (time_to_expire > 10) then -- 10 seconds gives us some leeway
+      return GC.access_token -- the current token was still valid
     end
+  end
   DEBUG(2,"Token Info request status: " .. status)
   DEBUG(2,"Getting a new token")
-  -- get a new token  
+  -- get a new token
   local str = '\'{"alg":"RS256","typ":"JWT"}\''
   local command = "echo -n " .. str .. " | openssl base64 -e"
   local jwt1= os_command(command)
@@ -165,12 +165,12 @@ function get_access_token(https,json)
   end
   jwt1 = string.gsub(jwt1,"\n","")
 
-  local iss = GC.ClientEmail 
+  local iss = GC.ClientEmail
   local scope = "https://www.googleapis.com/auth/calendar"
   local aud = "https://accounts.google.com/o/oauth2/token"
   local exp = tostring(os.time() + 3600)
   local iat = tostring(os.time())
- 
+
   str = '\'{"iss":"' .. iss .. '","scope":"' .. scope .. '","aud":"' .. aud .. '","exp":' .. exp .. ', "iat":' .. iat .. '}\''
   command = "echo -n " .. str .. " | openssl base64 -e"
   local jwt2 = os_command(command)
@@ -179,7 +179,7 @@ function get_access_token(https,json)
   return nil
   end
   jwt2 = string.gsub(jwt2,"\n","")
- 
+
   local jwt3 = jwt1 .. "." .. jwt2
   jwt3 = string.gsub(jwt3,"\n","")
   jwt3 = string.gsub(jwt3,"=","")
@@ -189,35 +189,35 @@ function get_access_token(https,json)
   local jwt4 = os_command(command)
   if not jwt4 then
     DEBUG(3,"Error encoding jwt4")
-  return nil  
+  return nil
   end
   jwt4 = string.gsub(jwt4,"\n","")
- 
+
   local jwt5 = string.gsub(jwt4,"\n","")
   jwt5 = string.gsub(jwt5,"=","")
   jwt5 = string.gsub(jwt5,"/","_")
   jwt5 = string.gsub(jwt5,"%+","-")
   command = "curl -k -s -H " .. '"Content-type: application/x-www-form-urlencoded"' .. " -X POST " ..'"https://accounts.google.com/o/oauth2/token"' .. " -d " .. '"grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' .. jwt3 .. "." .. jwt5 ..'"'
-  
+
   local token = os_command(command)
-  
+
   if not token then
     DEBUG(3,"Error getting token")
   return nil
   end
- 
+
   if (string.find(token, '"error":')) then
     DEBUG(3,"The token request returned an error")
     return nil
   end
- 
+
   if (not string.find(token, '\"access_token\" :')) then
     DEBUG(3,"The token request did not provide an access token")
     return nil
   end
- 
+
   local jsontoken = json.decode(token)
-  return jsontoken.access_token 
+  return jsontoken.access_token
 end
 
 
@@ -256,7 +256,7 @@ function requestCalendar(startmin, startmax, https, json)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
     return nil
   end
- 
+
   GC.access_token = get_access_token (https, json)
   if GC.access_token == nil then
     luup.variable_set(GCAL_SID, "gc_NextEvent","Fatal error - access token", lul_device)
@@ -264,19 +264,19 @@ function requestCalendar(startmin, startmax, https, json)
     DEBUG(1,"Fatal error trying to get access token")
   return nil
   end
- 
+
   DEBUG(2,"Checking google calendar")
-     
+
   local url = "https://www.googleapis.com/calendar/v3/calendars/".. GC.CalendarID .. "/events?"
   url = url .. "access_token=" .. GC.access_token .. "&timeZone=utc"
   url = url .. "&singleEvents=true&orderBy=startTime"
   url = url .. "&timeMax=" .. startmax .. "&timeMin=" .. startmin
   url = url .. "&fields=items(summary%2Cend%2Cstart%2Clocation)"
-  
+
   DEBUG(3,"Requested url: " .. url)
- 
+
   local body,code,_,status = https.request(url) -- get the calendar data
-  
+
   if (code ~= 200) then -- anything other than 200 is an error
     local errorMessage = "http error code: " .. code
     DEBUG(3, errorMessage)
@@ -294,7 +294,7 @@ function requestCalendar(startmin, startmax, https, json)
       luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = "Calendar data problem - no items tag", body = body }, EMAIL_DEVICE_ID)
       luup.variable_set(GCAL_SID, "gc_NextEvent","Bad Calendar data" , lul_device)
       luup.variable_set(GCAL_SID, "gc_NextEventTime", "", lul_device)
-    return nil 
+    return nil
   end
 
   local noitems = string.find(body, '%"items%"%:% %[%]') -- empty items array
@@ -302,7 +302,7 @@ function requestCalendar(startmin, startmax, https, json)
     DEBUG(1,"No event in the next day. Retry later...")
     luup.variable_set(GCAL_SID, "gc_NextEvent","No events found today" , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime", "", lul_device)
-    return "No Events" 
+    return "No Events"
   end
 
   DEBUG(2,"Calendar request status: " .. code)
@@ -319,24 +319,23 @@ function requestCalendar(startmin, startmax, https, json)
   return events
 end
 
-
 function getEvent(eventlist)
   DEBUG(3,"Function: getEvent")
-    
+
   -- iterate through each of the events and interpret any special instructions
   local numberEvents = table.getn(eventlist)
   DEBUG(2,"There were " .. numberEvents .. " events retrieved")
-  
+
   for i=1,numberEvents do
     -- get the start and end times
-    
+
     local starttime = strToTime(eventlist[i]['start'].date or eventlist[i]['start'].dateTime) + GC.timeZone
     local endtime   = strToTime(eventlist[i]['end'].date or eventlist[i]['end'].dateTime) + GC.timeZone
-    
+
     -- get the title and any start / stop delta or parameter
     local eventname = (eventlist[i]['summary'] or "No Name")
     local location = (eventlist[i]['location'] or "None")
-    
+
     local DEVICE_ID= string.match(location, "(.*):%d+")
     local DEVICE_NO= string.match(location, ".*:(%d+)")
 
@@ -348,25 +347,25 @@ end
 
 function checkGCal(https, json)
   local startmin, startmax = getStartMinMax()
-  local events = nil 
-  
+  local events = nil
+
   events = requestCalendar(startmin, startmax, https, json)
-  
+
   if (events == nil) then -- error from calendar
     DEBUG(3, "GCAL: Unable to retreive google calendar datas. Retry later...")
-    return GC.Interval, "timeout", "" 
+    return GC.Interval, "timeout", ""
   end
 
   if (events == "No Events") then -- request succeeded but no events were found
     DEBUG(3, "GCAL: No events in the next time window. Retry later...")
-    return GC.Interval, "timeout", "" 
+    return GC.Interval, "timeout", ""
   end
- 
+
   local gcalval = getEvent(events)
 
   if (gcalval == nil) then -- error from calendar
     DEBUG(3, "GCAL: No event in the next time window. Retry later...")
-    return GC.Interval, "timeout", "" 
+    return GC.Interval, "timeout", ""
   end
 
   -- Compute the delay in seconds before the next event starts
@@ -377,7 +376,7 @@ function checkGCal(https, json)
   --event has already started
   if (diff_start < 0) then
         if (GC.Interval < diff_end) then
-          return GC.Interval, "timein", gcalval 
+          return GC.Interval, "timein", gcalval
         else
           return diff_end, "end", gcalval
         end
@@ -398,8 +397,8 @@ function parseCalendarID(newID)
  if (string.find(newID,"ical") or string.find(newID,"iCal")) then -- treat as a public ical
    GC.CalendarID = newID
    GC.ical = true
- else -- a regular google calendar   
- -- there are several forms of the calendar url so we try to make a good one 
+ else -- a regular google calendar
+ -- there are several forms of the calendar url so we try to make a good one
   if string.find(newID,'(.-)src="http') then -- eliminate anything before src="http
     newID = string.gsub(newID,'(.-)src="http',"")
     newID = "http" .. newID
@@ -440,7 +439,7 @@ function GCalTimer(data)
     DEBUG(3, "GCAL: Timer: Interrupt call that have interrupt index: " .. interrupt)
     return
   end
-  
+
   if (command == "start") then
     local logmessage="GCAL: Timer: \"" .. name .. "\"  has just started"
     DEBUG(3, logmessage)
@@ -490,7 +489,7 @@ function CheckCalendar()
     luup.variable_set(GCAL_SID, "gc_NextEvent", command , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime", checktime, lul_device)
   end
-  
+
   data = GC.json.encode({command, gcalval, GC.interrupt})
   luup.call_timer("GCalTimer", 1, timeout, "", data)
 end
@@ -505,7 +504,7 @@ function getTimezone()
   date.isdst = os.date("*t").isdst
   local tz = (now - os.time(date))
   local tzhr = math.floor(tz/3600) -- whole hour
-  local tzmin = math.floor(tz%3600/60 + 0.5) -- nearest integer 
+  local tzmin = math.floor(tz%3600/60 + 0.5) -- nearest integer
   if (tzhr < 0) then
     tzmin = -tzmin
   end
@@ -517,10 +516,10 @@ function setupVariables()
   -- They are created here in the order that we want them to appear in the Advanced Tab
   local s1 = ""
   local n1 = 0
-  
+
   s1 = luup.variable_get(GCAL_SID, "gc_CalendarID", lul_device)
   if (s1 == nil) then
-    s1 = "" 
+    s1 = ""
     luup.variable_set(GCAL_SID, "gc_CalendarID",s1, lul_device)
   end
   GC.CalendarID = s1
@@ -532,7 +531,7 @@ function setupVariables()
   end
   EMAIL_DEVICE_ID = tonumber(n1)
 
-  
+
   n1 = luup.variable_get(GCAL_SID, "gc_displaystatus", lul_device)
   if ((n1 == nil) or n1 == "" or (tonumber(n1) > 100)) then
     n1 = 100
@@ -550,7 +549,7 @@ function GCalStartup(lul_device)
     DEBUG(1, "Fatal Error - Could not get credentials")
     return
   end
-  
+
   setupVariables()
 
   -- Check to make sure there is a Calendar ID else stop the plugin
@@ -563,10 +562,10 @@ function GCalStartup(lul_device)
 
   -- Get the Time Zone info
   GC.timeZone, GC.timeZonehr, GC.timeZonemin = getTimezone()
-  DEBUG(1,GC.debugPre .. tostring(lul_device))  
+  DEBUG(1,GC.debugPre .. tostring(lul_device))
   GC.description = luup.devices[lul_device].description
 
   GC.handle = luup.task(tostring("Check Calendar"), 1, GC.description, -1)
   CheckCalendar()
-  
+
 end
