@@ -259,6 +259,7 @@ function requestCalendar(startmin, startmax, https, json)
 
   GC.access_token = get_access_token (https, json)
   if GC.access_token == nil then
+    GC.access_token = ""
     luup.variable_set(GCAL_SID, "gc_NextEvent","Fatal error - access token", lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
     DEBUG(1,"Fatal error trying to get access token")
@@ -353,7 +354,7 @@ function checkGCal(https, json)
 
   if (events == nil) then -- error from calendar
     DEBUG(3, "GCAL: Unable to retreive google calendar datas. Retry later...")
-    return GC.Interval, "timeout", ""
+    return GC.Interval, "error", ""
   end
 
   if (events == "No Events") then -- request succeeded but no events were found
@@ -480,11 +481,13 @@ function CheckCalendar()
     DEBUG(3, "GCAL: Timer: Next event \"" .. gcalval[1] .. "\" in " .. timeout .. " seconds")
     luup.variable_set(GCAL_SID, "gc_NextEvent", gcalval[1] , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","Starts at " .. checktime , lul_device)
-
   elseif command == "end" then
     DEBUG(3, "GCAL: Timer: Event ends \"" .. gcalval[1] .. "\" in " .. timeout .. " seconds")
     luup.variable_set(GCAL_SID, "gc_NextEvent", gcalval[1] , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. checktime , lul_device)
+  elseif command == "error" then
+    -- error check again in an hour
+    timeout = 60 * 60
   else
     luup.variable_set(GCAL_SID, "gc_NextEvent", command , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime", checktime, lul_device)
