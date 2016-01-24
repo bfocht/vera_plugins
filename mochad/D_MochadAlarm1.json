@@ -1,11 +1,11 @@
 {
-	"flashicon": "icons\/Door_Lock.swf",
+	"default_icon": "door_lock_default.png",
 	"imgIconBody": "",
 	"imgIconDimmable": "",
 	"imgIconTurnable": "",
-	"imgIconMin": "icons\/Door_Lock_0.png",
-	"imgIconMax": "icons\/Door_Lock_100.png",
-	"halloIconsDir": "pics\/hallo",
+	"imgIconMin": "door_lock_unlocked.png",
+	"imgIconMax": "door_lock_locked.png",
+	"halloIconsDir": "pics/hallo",
 	"inScene": "1",
 	"DisplayStatus": {
 		"Style": "label",
@@ -76,7 +76,7 @@
 			"left": "1",
 			"x": "1",
 			"y": "1",
-			"text_align": "left",			
+			"text_align": "left",
 			"Display": {
 				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
 				"Variable": "DetailedArmMode",
@@ -166,7 +166,7 @@
 			"top": "1",
 			"left": "0",
 			"x": "1",
-			"y": "1",			
+			"y": "1",
 			"Display": {
 				"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
 				"Variable": "DetailedArmMode",
@@ -321,7 +321,7 @@
 				"top": "1",
 				"left": "1",
 				"x": "1",
-				"y": "1",			
+				"y": "1",
 				"Display": {
 					"Service": "urn:micasaverde-com:serviceId:AlarmPartition2",
 					"Variable": "ArmMode",
@@ -395,7 +395,7 @@
 				"text": "_DEVICE_NAME_ is Disarmed"
 				}
 			}
-		],				
+		],
 		"name": "ArmMode",
 		"comparisson": "=",
 		"prefix": {
@@ -547,5 +547,5 @@
           	},
 		"suffix": {}
 		}
-	]	
+	]
 }

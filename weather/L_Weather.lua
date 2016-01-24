@@ -92,7 +92,7 @@ local function fetchWeather(key, latitude, longitude)
     local st = os.time()
 
     local serverURL, xml, status
-    serverURL = SERVICE_LL_URL:format(key, latitude, longitude) 
+    serverURL = SERVICE_LL_URL:format(key, latitude, longitude)
 
     xml, status = http.request(serverURL)
     xml = xml:gsub(">%s*<", "><")
@@ -156,7 +156,10 @@ function refreshCache()
             result.windDirection,
             windSpeed)
 
-        luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Weather Update', body = weather_string }, EMAIL_DEVICE_ID)
+        if EMAIL_DEVICE_ID > 0 then
+          luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Weather Update', body = weather_string }, EMAIL_DEVICE_ID)
+        end
+
         -- Store the current timestamp
         local ta = os.date("*t")
         local s = string.format("%d-%02d-%02d %02d:%02d:%02d", ta.year, ta.month, ta.day, ta.hour, ta.min, ta.sec)
@@ -190,7 +193,7 @@ function refreshCache()
 end
 
 function startupDeferred()
-    
+
     local metric = luup.variable_get(WEATHER_SERVICE, "Metric", parentDevice)
     if (metric == nil or metric == "") then
         luup.variable_set(WEATHER_SERVICE, "Metric", "0", parentDevice)

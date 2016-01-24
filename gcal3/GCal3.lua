@@ -1,18 +1,22 @@
+local json = require("json")
+local  https = require("ssl.https")
+
 local GCAL_VERSION = "V 2.0"
 local GCAL_SID = "urn:srs-com:serviceId:GCalIII"
 local SECURITY_SID = "urn:micasaverde-com:serviceId:SecuritySensor1"
 local SWITCHPWR_SID = "urn:upnp-org:serviceId:SwitchPower1"
 local EMAIL_DEVICE_ID
+local LUL_DEVICE
 -- Variables that are 'global' for this plugin
 local GC = {}
 --Setup and file variables
-GC.CalendarID = ""
+CALENDAR_ID = ""
+CLIENT_EMAIL = ""
 
 GC.plugin_name = "GCal3" -- Do not change for this plugin
 
 GC.libpath = "/usr/lib/lua/" -- default vera directory for modules
 GC.basepath = "/etc/cmh-ludl/" -- default vera directory for uploads
-GC.jsonlua = GC.libpath .. "json.lua"
 GC.credentialfile = GC.plugin_name .. ".json"
 GC.pemfile = "/tmp/" .. GC.plugin_name ..".pem" -- certificate to this file
 
@@ -20,15 +24,14 @@ GC.pemfile = "/tmp/" .. GC.plugin_name ..".pem" -- certificate to this file
 GC.timeZone = 0
 GC.timeZonehr = 0
 GC.timeZonemin = 0
-GC.debug = 3 -- initial default, catches everything before variables initialized
+GC.debug = 2 -- initial default, catches everything before variables initialized
 GC.debugPre = "GCal3 " ..GCAL_VERSION .. ":"
 GC.description = ""
-GC.CalendarID = ""
 GC.access_token = ""
 GC.interrupt = 1
 GC.handle = 0
 GC.Interval = 60 * 60 * 6
-GC.json = require("json")
+
 
 
 -- Utility Functions
@@ -69,8 +72,8 @@ function readfromfile(filename)
   DEBUG(3,"Command " .. command .. " returned " ..result)
 
   if (result ~= 0) then -- return since we cannot read the file
-    luup.variable_set(GCAL_SID, "gc_NextEvent",string.gsub(filename,"/(.*)/","") .. " ??" , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent",string.gsub(filename,"/(.*)/","") .. " ??" , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","" , LUL_DEVICE)
     return nil
   end
 
@@ -88,18 +91,16 @@ function writetofile (filename,package)
   return t
 end
 
--- Authorization related functions
-function checkforcredentials(json)
-  DEBUG(3,"Function: checkforcredentials")
-
-  --make sure we have a credentials file
-  command = "ls " ..  GC.basepath .. GC.credentialfile
-  result = os.execute(command) -- check to see if there is a file
-  DEBUG(3,"Command " .. command .. " returned " ..result)
-  if result ~= 0 then -- we don't have a credential file
-    DEBUG(3,"Could not find the credentials file: ")
-    return nil
+function sendMail(subject, body)
+  if EMAIL_DEVICE_ID == nil or EMAIL_DEVICE_ID == "" then
+    return
   end
+  luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = subject, body = body }, EMAIL_DEVICE_ID)
+end
+
+-- Authorization related functions
+function checkforcredentials()
+  DEBUG(3,"Function: checkforcredentials")
 
   local contents = readfromfile(GC.basepath .. GC.credentialfile)
 
@@ -134,12 +135,13 @@ function checkforcredentials(json)
   end
 
    -- get the service account email name
-  GC.ClientEmail = credentials.client_email
+  CLIENT_EMAIL = credentials.client_email
   return true
 end
 
-function get_access_token(https,json)
+function get_access_token()
   local url = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" .. GC.access_token
+  DEBUG(3,url)
   local body, code, _,status = https.request(url) -- check the token status
   if (status == nil or code == nil) then
     --request failed
@@ -165,7 +167,7 @@ function get_access_token(https,json)
   end
   jwt1 = string.gsub(jwt1,"\n","")
 
-  local iss = GC.ClientEmail
+  local iss = CLIENT_EMAIL
   local scope = "https://www.googleapis.com/auth/calendar"
   local aud = "https://accounts.google.com/o/oauth2/token"
   local exp = tostring(os.time() + 3600)
@@ -247,28 +249,28 @@ function formatDate(line) -- used to interpret ical
   return datetime
 end
 
-function requestCalendar(startmin, startmax, https, json)
+function requestCalendar(startmin, startmax)
   DEBUG(3,"Function: requestCalendar")
 
-  if (GC.CalendarID == nil) then
+  if (CALENDAR_ID == nil) then
     DEBUG(3,"Calendar ID is not set.")
-    luup.variable_set(GCAL_SID, "gc_NextEvent","Missing Calendar ID", lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent","Missing Calendar ID", LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","" , LUL_DEVICE)
     return nil
   end
 
-  GC.access_token = get_access_token (https, json)
+  GC.access_token = get_access_token ()
   if GC.access_token == nil then
     GC.access_token = ""
-    luup.variable_set(GCAL_SID, "gc_NextEvent","Fatal error - access token", lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent","Fatal error - access token", LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","" , LUL_DEVICE)
     DEBUG(1,"Fatal error trying to get access token")
   return nil
   end
 
   DEBUG(2,"Checking google calendar")
 
-  local url = "https://www.googleapis.com/calendar/v3/calendars/".. GC.CalendarID .. "/events?"
+  local url = "https://www.googleapis.com/calendar/v3/calendars/".. CALENDAR_ID .. "/events?"
   url = url .. "access_token=" .. GC.access_token .. "&timeZone=utc"
   url = url .. "&singleEvents=true&orderBy=startTime"
   url = url .. "&timeMax=" .. startmax .. "&timeMin=" .. startmin
@@ -281,9 +283,9 @@ function requestCalendar(startmin, startmax, https, json)
   if (code ~= 200) then -- anything other than 200 is an error
     local errorMessage = "http error code: " .. code
     DEBUG(3, errorMessage)
-    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = errorMessage, body = errorMessage }, EMAIL_DEVICE_ID)
-    luup.variable_set(GCAL_SID, "gc_NextEvent",errorMessage , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","", lul_device)
+    sendMail(errorMessage, errorMessage)
+    luup.variable_set(GCAL_SID, "gc_NextEvent", errorMessage , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","", LUL_DEVICE)
   return nil
   end
 
@@ -292,17 +294,17 @@ function requestCalendar(startmin, startmax, https, json)
   local goodjson = string.find(body, "items")
   if (not goodjson) then
       DEBUG(1,"Calendar data problem - no items tag. Retry later...")
-      luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = "Calendar data problem - no items tag", body = body }, EMAIL_DEVICE_ID)
-      luup.variable_set(GCAL_SID, "gc_NextEvent","Bad Calendar data" , lul_device)
-      luup.variable_set(GCAL_SID, "gc_NextEventTime", "", lul_device)
+      sendMail("Calendar data problem - no items tag", body)
+      luup.variable_set(GCAL_SID, "gc_NextEvent","Bad Calendar data" , LUL_DEVICE)
+      luup.variable_set(GCAL_SID, "gc_NextEventTime", "", LUL_DEVICE)
     return nil
   end
 
   local noitems = string.find(body, '%"items%"%:% %[%]') -- empty items array
   if (noitems) then
     DEBUG(1,"No event in the next day. Retry later...")
-    luup.variable_set(GCAL_SID, "gc_NextEvent","No events found today" , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime", "", lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent","No events found today" , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime", "", LUL_DEVICE)
     return "No Events"
   end
 
@@ -313,8 +315,8 @@ function requestCalendar(startmin, startmax, https, json)
 
   if (events[1] == nil) then
     DEBUG(1,"Nil event in the next day. Retry later...")
-    luup.variable_set(GCAL_SID, "gc_NextEvent","Nil events found today" , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime", "", lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent","Nil events found today" , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime", "", LUL_DEVICE)
     return "No Events"
   end
   return events
@@ -346,11 +348,11 @@ function getEvent(eventlist)
   end
 end
 
-function checkGCal(https, json)
+function checkGCal()
   local startmin, startmax = getStartMinMax()
   local events = nil
 
-  events = requestCalendar(startmin, startmax, https, json)
+  events = requestCalendar(startmin, startmax)
 
   if (events == nil) then -- error from calendar
     DEBUG(3, "GCAL: Unable to retreive google calendar datas. Retry later...")
@@ -387,8 +389,8 @@ function checkGCal(https, json)
 end
 
 function parseCalendarID(newID)
-  luup.variable_set(GCAL_SID, "gc_CalendarID","", lul_device)
-  GC.CalendarID = ""
+  luup.variable_set(GCAL_SID, "gc_CalendarID","", LUL_DEVICE)
+  CALENDAR_ID = ""
   GC.ical = false
   newID = string.gsub(newID,'%%','%%25') -- encode any %
   newID = string.gsub(newID,'%&','%%26') -- encode any &
@@ -396,7 +398,7 @@ function parseCalendarID(newID)
   newID = string.gsub(newID,'+','%%2B')  -- encode any +
   newID = string.gsub(newID,'@','%%40')  -- encode any @
  if (string.find(newID,"ical") or string.find(newID,"iCal")) then -- treat as a public ical
-   GC.CalendarID = newID
+   CALENDAR_ID = newID
    GC.ical = true
  else -- a regular google calendar
  -- there are several forms of the calendar url so we try to make a good one
@@ -412,16 +414,16 @@ function parseCalendarID(newID)
     newID = string.gsub(newID,'gmail.com(.*)',"")
     newID = newID .. "gmail.com"
   end
-  GC.CalendarID = string.gsub(newID,'(.*)%?src=',"") -- ?src=
-  GC.CalendarID = string.gsub(GC.CalendarID,'(.*)%%26src=',"") -- &src=
+  CALENDAR_ID = string.gsub(newID,'(.*)%?src=',"") -- ?src=
+  CALENDAR_ID = string.gsub(CALENDAR_ID,'(.*)%%26src=',"") -- &src=
  end
 
-  luup.variable_set(GCAL_SID, "gc_CalendarID", newID, lul_device)
-  DEBUG(3,"Calendar ID is: " .. GC.CalendarID)
+  luup.variable_set(GCAL_SID, "gc_CalendarID", newID, LUL_DEVICE)
+  DEBUG(3,"Calendar ID is: " .. CALENDAR_ID)
 end
 
 function GCalTimer(data)
-  local stuff = GC.json.decode(data)
+  local stuff = json.decode(data)
   ----------------
   --stuff[1] = command : startup, timeout, start, end
   --stuff[2] = name ,starttime, endtime, sid, number
@@ -445,33 +447,31 @@ function GCalTimer(data)
     local logmessage="GCAL: Timer: \"" .. name .. "\"  has just started"
     DEBUG(3, logmessage)
     --trigger the device
-    luup.variable_set(SECURITY_SID, "Tripped", 1, lul_device)
+    luup.variable_set(SECURITY_SID, "Tripped", 1, LUL_DEVICE)
     luup.call_action(sid, "SetTarget",{newTargetValue = "1"}, tonumber(dev_num))
-    luup.variable_set(GCAL_SID, "gc_displaystatus", 100, lul_device)
-    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, EMAIL_DEVICE_ID)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. os.date("%H:%M %b %d", endtime) , lul_device)
+    luup.variable_set(GCAL_SID, "gc_displaystatus", 100, LUL_DEVICE)
+    sendMail(logmessage, logmessage)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. os.date("%H:%M %b %d", endtime) , LUL_DEVICE)
     --set the end timeout
     local diff_end = endtime - os.time()
-    data = GC.json.encode({"end", stuff[2] ,GC.interrupt})
+    data = json.encode({"end", stuff[2] ,GC.interrupt})
     luup.call_timer("GCalTimer", 1, diff_end, "", data)
   elseif (command == "end") then
     local logmessage="GCAL: Timer: \"" .. name .. "\"  has just finished"
     DEBUG(3, logmessage)
-    luup.variable_set(SECURITY_SID, "Tripped", 0, lul_device)
+    luup.variable_set(SECURITY_SID, "Tripped", 0, LUL_DEVICE)
     luup.call_action(sid, "SetTarget",{newTargetValue = "0"}, tonumber(dev_num))
-    luup.variable_set(GCAL_SID, "gc_displaystatus", 0, lul_device)
-    luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = logmessage, body = logmessage }, EMAIL_DEVICE_ID)
-    luup.call_timer("GCalTimer", 1, 100, "", GC.json.encode({"timeout", "", GC.interrupt}))
+    luup.variable_set(GCAL_SID, "gc_displaystatus", 0, LUL_DEVICE)
+    sendMail(logmessage, logmessage)
+    luup.call_timer("GCalTimer", 1, 100, "", json.encode({"timeout", "", GC.interrupt}))
   else
     CheckCalendar()
   end
 end
 
 function CheckCalendar()
-  local  https = require("ssl.https")
   https.timeout = 30
-  local json = require("json")
-  timeout, command, gcalval = checkGCal(https, json)
+  timeout, command, gcalval = checkGCal()
   luup.task(tostring("Finish Calendar Check"), 4, GC.description, GC.handle)
   package.loaded.https = nil
   package.loaded.json = nil
@@ -479,21 +479,21 @@ function CheckCalendar()
 
   if command == "start" then
     DEBUG(3, "GCAL: Timer: Next event \"" .. gcalval[1] .. "\" in " .. timeout .. " seconds")
-    luup.variable_set(GCAL_SID, "gc_NextEvent", gcalval[1] , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","Starts at " .. checktime , lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent", gcalval[1] , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","Starts at " .. checktime , LUL_DEVICE)
   elseif command == "end" then
     DEBUG(3, "GCAL: Timer: Event ends \"" .. gcalval[1] .. "\" in " .. timeout .. " seconds")
-    luup.variable_set(GCAL_SID, "gc_NextEvent", gcalval[1] , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. checktime , lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent", gcalval[1] , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime","Ends at " .. checktime , LUL_DEVICE)
   elseif command == "error" then
     -- error check again in an hour
     timeout = 60 * 60
   else
-    luup.variable_set(GCAL_SID, "gc_NextEvent", command , lul_device)
-    luup.variable_set(GCAL_SID, "gc_NextEventTime", checktime, lul_device)
+    luup.variable_set(GCAL_SID, "gc_NextEvent", command , LUL_DEVICE)
+    luup.variable_set(GCAL_SID, "gc_NextEventTime", checktime, LUL_DEVICE)
   end
 
-  data = GC.json.encode({command, gcalval, GC.interrupt})
+  data = json.encode({command, gcalval, GC.interrupt})
   luup.call_timer("GCalTimer", 1, timeout, "", data)
 end
 
@@ -514,7 +514,7 @@ function getTimezone()
   return tz, tzhr, tzmin
 end
 
-function setupVariables()
+function setupVariables(lul_device)
   -- Because variables do not exist before the first "variable_set"
   -- They are created here in the order that we want them to appear in the Advanced Tab
   local s1 = ""
@@ -525,7 +525,7 @@ function setupVariables()
     s1 = ""
     luup.variable_set(GCAL_SID, "gc_CalendarID",s1, lul_device)
   end
-  GC.CalendarID = s1
+  CALENDAR_ID = s1
 
   n1 = luup.variable_get(GCAL_SID, "EmailDeviceID", lul_device)
   if (n1 == nil or n1 == "") then
@@ -543,8 +543,9 @@ function setupVariables()
 end
 
 function GCalStartup(lul_device)
+  LUL_DEVICE = lul_device
   --check for new credentials file
-  local credentials = checkforcredentials(json)
+  local credentials = checkforcredentials()
   package.loaded.json = nil
   if not credentials then
     luup.variable_set(GCAL_SID, "gc_NextEvent","Fatal error: credentials" , lul_device)
@@ -553,10 +554,10 @@ function GCalStartup(lul_device)
     return
   end
 
-  setupVariables()
+  setupVariables(lul_device)
 
   -- Check to make sure there is a Calendar ID else stop the plugin
-  if (GC.CalendarID == "") then
+  if (CALENDAR_ID == "") then
     luup.variable_set(GCAL_SID, "gc_NextEvent","The CalendarID is not set" , lul_device)
     luup.variable_set(GCAL_SID, "gc_NextEventTime","" , lul_device)
     DEBUG(1,GC.debugPre .. "The Calendar ID is not set ...")
@@ -570,5 +571,5 @@ function GCalStartup(lul_device)
 
   GC.handle = luup.task(tostring("Check Calendar"), 1, GC.description, -1)
   CheckCalendar()
-
+  return true,'ok','GCal3'
 end

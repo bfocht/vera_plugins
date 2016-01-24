@@ -21,6 +21,7 @@
       <serviceId>urn:upnp-org:serviceId:SwitchPower1</serviceId>
       <name>SetTarget</name>
       <run>
+        log("Action::SetTarget:"..lul_settings.newTargetValue,1)
         switch_set_target(lul_device, lul_settings)
       </run>
     </action>
@@ -36,7 +37,7 @@
       <serviceId>urn:micasaverde-com:serviceId:SecuritySensor1</serviceId>
       <name>SetArmed</name>
       <run>
-        debug("Action::SetArmed:"..lul_settings.newArmedValue)
+        log("Action::SetArmed:"..lul_settings.newArmedValue,1)
         luup.variable_set(SECURITY_SID, "Armed", lul_settings.newArmedValue, lul_device)
       </run>
     </action>
@@ -44,7 +45,7 @@
       <serviceId>urn:micasaverde-com:serviceId:HaDevice1</serviceId>
       <name>ToggleState</name>
       <run>
-        debug("Action::ToggleState:" .. lul_device)
+        log("Action::ToggleState:" .. lul_device,1)
       </run>
     </action>
     <action>

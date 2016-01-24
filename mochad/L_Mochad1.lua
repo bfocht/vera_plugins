@@ -8,7 +8,9 @@ local ALARM_SID     = "urn:micasaverde-com:serviceId:AlarmPartition2"
 local BINARY_SCHEMA  = "urn:schemas-micasaverde-com:device:BinaryLight:1"
 local DIMMING_SCHEMA = "urn:schemas-micasaverde-com:device:DimmableLight:1"
 local MOTION_SCHEMA  = "urn:schemas-micasaverde-com:device:MotionSensor:1"
+local DOOR_SCHEMA  = "urn:schemas-micasaverde-com:device:DoorSensor:1"
 local ALARM_SCHEMA = "urn:schemas-micasaverde-com:device:AlarmPartition:2"
+
 
 local ipAddress
 local ipPort = 1099
@@ -111,18 +113,18 @@ local function is_type(dev, type)
 end
 
 ------------------------------------------------------------
-local function add_children(parent, child_list_ptr, prefix, schema, dev_file, dev_type, csv_dev_list)
+local function add_children(parent, child_list_ptr, prefix, schema, dev_file, dev_type, impl_file, csv_dev_list, variables)
   local dev_list = split_deliminated_string(csv_dev_list,',')
   for idx, dev_name in ipairs(dev_list) do
       dev_name = trim(dev_name)
       if (dev_name and dev_name ~= "") then
-         --debug("Adding " .. dev_type .. " " .. dev_name)
-         luup.chdev.append(parent, child_list_ptr, prefix .. dev_name, "X10 " .. dev_name, schema, dev_file, "", "", false)
+         log("Adding " .. dev_type .. " " .. dev_name)
+         luup.chdev.append(parent, child_list_ptr, prefix .. dev_name, "X10 " .. dev_name, schema, dev_file, impl_file, variables, false)
      end
  end
 end
 
-------------------------------------------------------------	
+------------------------------------------------------------
 local function dim(current_value)
  local new_value
  new_value = current_value - 10
@@ -132,7 +134,7 @@ local function dim(current_value)
  return new_value
 end
 
-------------------------------------------------------------	
+------------------------------------------------------------
 local function bright(current_value)
  local new_value
  new_value = current_value + 10
@@ -211,20 +213,21 @@ function startup(lul_device)
 
     ------------------------------------------------------------
     -- APPLIANCE MODULES
-    add_children(lul_device, child_devices, 'A-', BINARY_SCHEMA,  "D_BinaryLight1.xml",  "Binary Light", app_ID)
+    add_children(lul_device, child_devices, 'A-', BINARY_SCHEMA,  "D_BinaryLight1.xml",  "Binary Light", "", app_ID, SWITCHPWR_SID .. ",Status=0")
     -- DIMMABLE LIGHTS
-    add_children(lul_device, child_devices, 'D-', DIMMING_SCHEMA, "D_DimmableLight1.xml", "Dimmable Light", dim_ID)
+    add_children(lul_device, child_devices, 'D-', DIMMING_SCHEMA, "D_DimmableLight1.xml", "Dimmable Light", "", dim_ID, SWITCHPWR_SID .. ",Status=0\n".. DIMMING_SID ..",LoadLevelStatus=0")
     -- SOFTSTART DIMMABLE LIGHTS --
-    add_children(lul_device, child_devices, 'X-', DIMMING_SCHEMA, "D_DimmableLight1.xml", "Dimmable Light", xdim_ID)
+    add_children(lul_device, child_devices, 'X-', DIMMING_SCHEMA, "D_DimmableLight1.xml", "Dimmable Light", "", xdim_ID, SWITCHPWR_SID .. ",Status=0\n".. DIMMING_SID ..",LoadLevelStatus=0")
     -- MOTION SENSORS --
-    add_children(lul_device, child_devices, 'M-', MOTION_SCHEMA,  "D_MotionSensor1.xml",  "Motion Sensor", motion_ID)
+    add_children(lul_device, child_devices, 'M-', MOTION_SCHEMA,  "D_MotionSensor1.xml",  "Motion Sensor", "", motion_ID, SECURITY_SID .. ",Tripped=false\n" .. SECURITY_SID .. ",Armed=0")
     -- RFSEC MOTION SENSORS --
-    add_children(lul_device, child_devices, 'R-', MOTION_SCHEMA,  "D_MotionSensor1.xml",  "RFSec Motion Sensor", rfsec_m_ID)
+    add_children(lul_device, child_devices, 'R-', MOTION_SCHEMA,  "D_MotionSensor1.xml",  "RFSec Motion Sensor", "", rfsec_m_ID, SECURITY_SID .. ",Tripped=false\n" .. SECURITY_SID .. ",Armed=0")
     -- RFSEC DOOR/WINDOW SENSORS --
-    add_children(lul_device, child_devices, 'S-', MOTION_SCHEMA,  "D_MotionSensor1.xml",  "RFSec Door/Window Sensor", rfsec_d_ID)
+    add_children(lul_device, child_devices, 'S-', DOOR_SCHEMA,  "D_DoorSensor1.xml",  "RFSec Door/Window Sensor", "", rfsec_d_ID, SECURITY_SID .. ",Tripped=false\n" .. SECURITY_SID .. ",Armed=0")
 
     --add Alarm partition
-    luup.chdev.append(lul_device, child_devices, "X10_partition", "X10 Alarm Partition", ALARM_SCHEMA, "D_MochadAlarm1.xml", nil, nil, false)
+    local alarm_state = ALARM_SID .. ",ArmMode=Disarmed\n" .. ALARM_SID .. ",DetailedArmMode=Disarmed\n" .. ALARM_SID .. ",Alarm=None\n"
+    luup.chdev.append(lul_device, child_devices, "X10_partition", "X10 Alarm Partition", ALARM_SCHEMA, "D_MochadAlarm1.xml", "", alarm_state, false)
 
     luup.chdev.sync(lul_device, child_devices)
 
@@ -236,7 +239,7 @@ function startup(lul_device)
     for k, v in pairs(luup.devices) do
         -- if I am the parent device
         if v.device_num_parent == luup.device then
-            --debug('Found Child ID: ' .. k .. ' AltID: ' .. v.id)
+            log('Found Child ID: ' .. k .. ' AltID: ' .. v.id)
             child_id_lookup_table[v.id] = k
             numberChilds=numberChilds+1
         end
@@ -400,7 +403,7 @@ local function rxsec_incoming_data(addr, new_state)
                 trip = '0'
             end
 
-    -- Handle RFSec Door Sensors:	
+    -- Handle RFSec Door Sensors:
     elseif (is_type(bcdaddr, "RFSecDoorSensors") ) then
         altid = 'S-' .. bcdaddr
         if( new_state:sub(1, 13) == "Contact_alert" ) then

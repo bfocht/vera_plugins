@@ -1,5 +1,6 @@
 {
-    "flashicon": "images/x10.png",
+    "flashicon": "x10.png",
+    "default_icon": "x10.png",
     "DisplayStatus": {},
     "doc_url": {},
     "inScene": "0",
@@ -7,7 +8,7 @@
         {
             "Label": {
             "lang_tag": "mochad_status",
-            "text": "Mochad Status" 
+            "text": "Mochad Status"
             },
             "Position": "0",
             "TabType": "flash",
@@ -55,7 +56,7 @@
                     "ControlType": "label",
                     "Label": {
                         "lang_tag": "lblMsg",
-                        "text": "Child Devices:" 
+                        "text": "Child Devices:"
                     },
                     "top": 1,
                     "left": 0,
@@ -84,7 +85,7 @@
                         "Left": 140,
                         "Width": 150,
                         "Height": 20
-                    } 
+                    }
                 }
             ]
         },

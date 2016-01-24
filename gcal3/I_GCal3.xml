@@ -33,7 +33,7 @@
         luup.log(string.format("GCAL: Manual Check Calendar"))
         luup.task(tostring("Manual Check Calendar"), 1, GC.description, GC.handle)
         GC.interrupt = GC.interrupt + 1
-        GCalTimer(json.encode({"manual", "", GC.interrupt})) 
+        GCalTimer(json.encode({"manual", "", GC.interrupt}))
      </run>
   </action>
   <action>
@@ -45,10 +45,10 @@
          return
       end
       GC.newCalendarID = trimString(lul_settings.new_gc_CalendarID)
-      DEBUG(3,"User input Calendar ID = " .. lul_settings.new_gc_CalendarID)     
+      DEBUG(3,"User input Calendar ID = " .. lul_settings.new_gc_CalendarID)
       parseCalendarID(GC.newCalendarID)
       GC.interrupt = GC.interrupt + 1
-      GCalTimer(json.encode({"manual", "", GC.interrupt})) 
+      GCalTimer(json.encode({"manual", "", GC.interrupt}))
      </run>
   </action>
   </actionList>
