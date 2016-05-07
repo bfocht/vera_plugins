@@ -99,8 +99,8 @@
                         "Height": 20
                     }
                 },
-               
-               
+
+
                 {
                     "ControlType": "label",
                     "Label": {
@@ -180,7 +180,7 @@
                         "Height": 20
                     }
                 },
-               
+
                 {
                     "ControlType": "label",
                     "Label": {
@@ -197,7 +197,7 @@
                 {
                     "ControlType": "variable",
                     "Display": {
-                        "Service": "urn:micasaverde-com:serviceId:HaDevice1",
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
                         "Variable": "LastUpdate",
                         "Top": 105,
                         "Left": 210,
@@ -224,8 +224,8 @@
                         "Height": 18
                     },
                     "Command": {
-                        "Service": "urn:micasaverde-com:serviceId:HaDevice1",
-                        "Action": "Poll",
+                        "Service": "urn:upnp-micasaverde-com:serviceId:Weather1",
+                        "Action": "CheckWeather",
                         "Parameters": [
                             {
                                 "Name": "updateCheck",

@@ -140,22 +140,25 @@ function checkforcredentials()
 end
 
 function get_access_token()
-  local url = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" .. GC.access_token
-  DEBUG(3,url)
-  local body, code, _,status = https.request(url) -- check the token status
-  if (status == nil or code == nil) then
-    --request failed
-    return nil
-  end
-  if (code ==200) then
-    local tokencheck = json.decode(body)
-    local time_to_expire = tokencheck.expires_in
-    DEBUG(2,"Token will expire in " .. time_to_expire .." sec")
-    if (time_to_expire > 10) then -- 10 seconds gives us some leeway
-      return GC.access_token -- the current token was still valid
+  if (GC.access_token ~= nil and GC.access_token ~= "") then
+    local url = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" .. GC.access_token
+
+    local body, code, _,status = https.request(url) -- check the token status
+    if (status == nil or code == nil) then
+      --request failed
+      return nil
     end
+    if (code ==200) then
+      local tokencheck = json.decode(body)
+      local time_to_expire = tokencheck.expires_in
+      DEBUG(2,"Token will expire in " .. time_to_expire .." sec")
+      if (time_to_expire > 10) then -- 10 seconds gives us some leeway
+        return GC.access_token -- the current token was still valid
+      end
+    end
+    DEBUG(2,"Token Info request status: " .. status)
   end
-  DEBUG(2,"Token Info request status: " .. status)
+
   DEBUG(2,"Getting a new token")
   -- get a new token
   local str = '\'{"alg":"RS256","typ":"JWT"}\''

@@ -1,5 +1,6 @@
 {
-    "flashicon": "images\/logo.png",
+    "flashicon": "images/logo.png",
+    "default_icon": "images/logo.png",
     "imgIconBody": "",
     "imgIconDimmable": "",
     "imgIconTurnable": "",
@@ -39,7 +40,7 @@
                     "scenegroup": "1"
                 }
             ],
-            "Control": [               
+            "Control": [
                 {
                     "ControlType": "label",
                     "Label": {

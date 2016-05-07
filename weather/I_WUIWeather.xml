@@ -24,8 +24,8 @@
       </run>
     </action>
     <action>
-      <serviceId>urn:micasaverde-com:serviceId:HaDevice1</serviceId>
-      <name>Poll</name>
+      <serviceId>urn:upnp-micasaverde-com:serviceId:Weather1</serviceId>
+      <name>CheckWeather</name>
       <run>
         task("Check Weather Start", TASK_BUSY)
         -- Force refreshCache to get called in a Timer

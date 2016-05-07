@@ -91,6 +91,9 @@
     <action>
       <name>SetUnitsUS</name>
     </action>
+     <action>
+      <name>CheckWeather</name>
+    </action>
     <action>
       <name>SetLocation</name>
       <argumentList>

@@ -89,6 +89,9 @@ local function findChild(parentDevice, label)
 end
 
 local function fetchWeather(key, latitude, longitude)
+    if key == nil or latitude == nil or longitude == nil then
+        return false, "Location or ProviderKey not set"
+    end
     local st = os.time()
 
     local serverURL, xml, status

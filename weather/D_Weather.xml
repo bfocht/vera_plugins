@@ -6,7 +6,7 @@
   </specVersion>
   <device>
     <deviceType>urn:demo-micasaverde-com:device:weather:1</deviceType>
-    <staticJson>D_Weather.json</staticJson> 
+    <staticJson>D_Weather.json</staticJson>
     <friendlyName>World Weather</friendlyName>
     <manufacturer>World Weather</manufacturer>
     <manufacturerURL>http://en.wikipedia.org/wiki/Weather</manufacturerURL>
