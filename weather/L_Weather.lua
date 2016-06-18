@@ -15,7 +15,6 @@ local SERVICE_LOC_URL = "https://api.wunderground.com/api/%s/conditions/forecast
 local SERVICE_LL_URL = "https://api.wunderground.com/api/%s/conditions/forecast/q/%#.6f,%#.6f.xml"
 
 local MSG_CLASS = "WUIWeather"
-local EMAIL_DEVICE_ID
 local LONGITUDE
 local LATITUDE
 local METRIC
@@ -159,8 +158,11 @@ function refreshCache()
             result.windDirection,
             windSpeed)
 
-        if EMAIL_DEVICE_ID > 0 then
-          luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Weather Update', body = weather_string }, EMAIL_DEVICE_ID)
+        local email_device_id = luup.variable_get(WEATHER_SERVICE, "EmailDeviceNumber", lul_device)
+        email_device_id = tonumber(n1)
+
+        if email_device_id > 0 then
+          luup.call_action( "urn:upnp-smtp-svc:serviceId:SND1", "SendMail", { subject = 'Weather Update', body = weather_string }, email_device_id)
         end
 
         -- Store the current timestamp
@@ -215,13 +217,6 @@ function startupDeferred()
         end
     end
 
-    local n1 = luup.variable_get(WEATHER_SERVICE, "EmailDeviceNumber", lul_device)
-    if (n1 == nil or n1 == "") then
-        n1 = 0
-        luup.variable_set(WEATHER_SERVICE, "EmailDeviceNumber","", lul_device)
-    end
-    EMAIL_DEVICE_ID = tonumber(n1)
-
     PROVIDERKEY = luup.variable_get(WEATHER_SERVICE, "ProviderKey", PARENT_DEVICE)
     if (PROVIDERKEY == nil or PROVIDERKEY == "") then
         luup.variable_set(WEATHER_SERVICE, "ProviderKey", "", PARENT_DEVICE)
@@ -234,7 +229,17 @@ function startupDeferred()
     end
 end
 
+function provision(size, variables, parent)
+    for i= 1, size do
+        if (luup.variable_get(WEATHER_SERVICE, variables[i], parent) == nil) then
+            luup.variable_set(WEATHER_SERVICE, variables[i], "", parent)
+        end
+    end 
+end
+
 function startup(parentDevice)
+    provision(4, {'Metric','Location','EmailDeviceNumber','ProviderKey'}, parentDevice)
+
     local CURRENT_TEMPERATURE_ID = "Weather-Current-Temperature"
     local FORECAST_HIGH_TEMPERATURE_ID = "Weather-Forecast-HighTemperature"
     local FORECAST_LOW_TEMPERATURE_ID = "Weather-Forecast-LowTemperature"

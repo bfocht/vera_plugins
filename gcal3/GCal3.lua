@@ -1,4 +1,4 @@
-local json = require("json")
+local json = require("dkjson")
 local  https = require("ssl.https")
 
 local GCAL_VERSION = "V 2.0"
