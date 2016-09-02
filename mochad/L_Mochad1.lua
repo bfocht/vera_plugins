@@ -40,13 +40,13 @@ end
 
 ------------------------------------------------------------
 local function sendCommand(command)
-if luup.io.write(command)==false then
-    log("cannot send: " .. tostring(command),1)
-    luup.set_failure(true)
-    return false
-else
-    return true
-end
+  if luup.io.write(command)==false then
+      log("cannot send: " .. tostring(command),1)
+      luup.set_failure(true)
+      return false
+  else
+      return true
+  end
 end
 
 ------------------------------------------------------------
