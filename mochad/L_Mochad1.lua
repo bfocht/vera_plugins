@@ -40,13 +40,13 @@ end
 
 ------------------------------------------------------------
 local function sendCommand(command)
-if luup.io.write(command)==false then
-    log("cannot send: " .. tostring(command),1)
-    luup.set_failure(true)
-    return false
-else
-    return true
-end
+  if luup.io.write(command)==false then
+      log("cannot send: " .. tostring(command),1)
+      luup.set_failure(true)
+      return false
+  else
+      return true
+  end
 end
 
 ------------------------------------------------------------
@@ -393,7 +393,8 @@ end
 local function rxsec_incoming_data(addr, new_state)
     local trip
     local altit
-    local bcdaddr = convertBCD(addr)
+--    local bcdaddr = convertBCD(addr)
+    local bcdaddr = addr
     -- Handle RFSec Motion Sensors:
     if ( is_type(bcdaddr, "RFSecMotionSensors") ) then
         altid = 'R-' .. bcdaddr
@@ -440,16 +441,17 @@ end
 function incoming(lul_data)
     local data = tostring(lul_data)
     log('Recieved '..data, 50)
-    local t = split_deliminated_string(data,',')
+    local t = split_deliminated_string(data,' ')
 
     if (t == nil) then
         return
     end
 
-    local rx_tx     = t[1]
-    local rx_type   = t[2]
-    local addr      = t[3]
-    local new_state = t[4]
+-- 08/28 23:35:35 Rx RFSEC Addr: FC:8A:80 Func: Motion_normal_MS10A
+    local rx_tx     = t[3]
+    local rx_type   = t[4]
+    local addr      = t[6]
+    local new_state = t[8]
     local addr_found = false
     if (rx_tx == 'Rx') then
         -- Check to see if it is an RFSEC device:
