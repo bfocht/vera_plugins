@@ -5,11 +5,11 @@ local HADEVICE_SID  = "urn:micasaverde-com:serviceId:HaDevice1"
 local DIMMING_SID   = "urn:upnp-org:serviceId:Dimming1"
 local ALARM_SID     = "urn:micasaverde-com:serviceId:AlarmPartition2"
 
-local BINARY_SCHEMA  = "urn:schemas-micasaverde-com:device:BinaryLight:1"
-local DIMMING_SCHEMA = "urn:schemas-micasaverde-com:device:DimmableLight:1"
+local BINARY_SCHEMA  = "urn:schemas-upnp-org:device:BinaryLight:1"
+local DIMMING_SCHEMA = "urn:schemas-upnp-org:device:DimmableLight:1"
 local MOTION_SCHEMA  = "urn:schemas-micasaverde-com:device:MotionSensor:1"
-local DOOR_SCHEMA  = "urn:schemas-micasaverde-com:device:DoorSensor:1"
-local ALARM_SCHEMA = "urn:schemas-micasaverde-com:device:AlarmPartition:2"
+local DOOR_SCHEMA    = "urn:schemas-micasaverde-com:device:DoorSensor:1"
+local ALARM_SCHEMA   = "urn:schemas-micasaverde-com:device:AlarmPartition:2"
 
 
 local ipAddress
